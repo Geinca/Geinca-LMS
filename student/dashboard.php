@@ -86,17 +86,19 @@
         </ul>
     </section>
 
+   <!-- upcoming  video section  -->
  <section class="upcoming-videos-section">
   <h2>Upcoming Videos</h2>
   <div class="videos-scroll-container">
-    <div class="video-card">
-      <img src="https://via.placeholder.com/400x220.png?text=Video+1" alt="Video 1" />
+     <div class="videos-scroll-wrapper">
+      <div class="video-card">
+      <img src="https://via.placeholder.com/400x220.png?text=Video+2" alt="Video 2" />
       <div class="video-info">
         <div class="video-header">
-          <h4>Video Title 1</h4>
-          <span class="badge beginner">Beginner</span>
+          <h4>Video Title 2</h4>
+          <span class="badge intermediate">Intermediate</span>
         </div>
-        <p>Release Date: May 30, 2025</p>
+        <p>Release Date: June 5, 2025</p>
         <button class="notify-btn">Notify Me</button>
       </div>
     </div>
@@ -112,30 +114,37 @@
         <button class="notify-btn">Notify Me</button>
       </div>
     </div>
-
     <div class="video-card">
-      <img src="https://via.placeholder.com/400x220.png?text=Video+3" alt="Video 3" />
+      <img src="https://via.placeholder.com/400x220.png?text=Video+2" alt="Video 2" />
       <div class="video-info">
         <div class="video-header">
-          <h4>Video Title 3</h4>
-          <span class="badge advanced">Advanced</span>
-        </div>
-        <p>Release Date: June 12, 2025</p>
-        <button class="notify-btn">Notify Me</button>
-      </div>
-    </div>
-
-    <div class="video-card">
-      <img src="https://via.placeholder.com/400x220.png?text=Video+4" alt="Video 4" />
-      <div class="video-info">
-        <div class="video-header">
-          <h4>Video Title 4</h4>
+          <h4>Video Title 2</h4>
           <span class="badge intermediate">Intermediate</span>
         </div>
-        <p>Release Date: June 20, 2025</p>
+        <p>Release Date: June 5, 2025</p>
         <button class="notify-btn">Notify Me</button>
       </div>
     </div>
+    <div class="video-card">
+      <img src="https://via.placeholder.com/400x220.png?text=Video+2" alt="Video 2" />
+      <div class="video-info">
+        <div class="video-header">
+          <h4>Video Title 2</h4>
+          <span class="badge intermediate">Intermediate</span>
+        </div>
+        <p>Release Date: June 5, 2025</p>
+        <button class="notify-btn">Notify Me</button>
+      </div>
+    </div>
+     </div>
+    
+
+    
+
+    
+
+
+   
   </div>
 </section>
 
