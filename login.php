@@ -50,7 +50,7 @@
 <body>
 <div class="container mt-5">
     <h2>Login</h2>
-    <?php if ($error): ?>
+    <!-- <?php if ($error): ?> -->
         <div class="alert alert-danger"><?= $error ?></div>
     <?php endif; ?>
     <form method="POST">

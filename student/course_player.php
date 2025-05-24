@@ -1,9 +1,9 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'student') {
-    header('Location: ../login.php');
-    exit;
-}
+// session_start();
+// if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'student') {
+//     header('Location: ../login.php');
+//     exit;
+// }
 
 $course_id = isset($_GET['course_id']) ? intval($_GET['course_id']) : 1;
 $lecture_id = isset($_GET['lecture_id']) ? intval($_GET['lecture_id']) : 1;

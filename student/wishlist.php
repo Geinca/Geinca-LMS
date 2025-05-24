@@ -1,9 +1,9 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'student') {
-    header('Location: ../login.php');
-    exit;
-}
+// session_start();
+// if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'student') {
+//     header('Location: ../login.php');
+//     exit;
+// }
 
 // For now, dummy wishlist courses (in a real app, you'd fetch from DB)
 $wishlist_courses = [

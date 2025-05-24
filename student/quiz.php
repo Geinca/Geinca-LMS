@@ -1,9 +1,9 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'student') {
-    header('Location: ../login.php');
-    exit;
-}
+// session_start();
+// if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'student') {
+//     header('Location: ../login.php');
+//     exit;
+// }
 
 $course_id = 1; // hardcoded for demo
 
