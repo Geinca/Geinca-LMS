@@ -30,23 +30,10 @@
 </head>
 
 <body>
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h4 class="text-center py-3">Student Panel</h4>
-    <a href="dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
-    <a href="enrolled_courses.php"><i class="fas fa-book"></i><span>Enrolled Courses</span></a>
-    <a href="wishlist.php"><i class="fas fa-heart"></i><span>Wishlist</span></a>
-    <a href="recommendations.php"><i class="fas fa-star"></i><span>Recommendations</span></a>
-    <a href="course_player.php"><i class="fas fa-play-circle"></i><span>Course Player</span></a>
-    <a href="quiz.php"><i class="fas fa-question-circle"></i><span>Quiz</span></a>
-    <a href="progress.php"><i class="fas fa-chart-line"></i><span>Progress</span></a>
-    <a href="discussion.php"><i class="fas fa-comments"></i><span>Discussion</span></a>
-    <a href="certificate.php"><i class="fas fa-certificate"></i><span>Certificate</span></a>
-    <a href="../logout.php"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
-  </div>
+  <?php include './partials/sidebar.php' ?>
 
   <!-- Main Content -->
-  <div class="container my-5" style="margin-left: 250px;">
+  <div class="container my-5">
     <h2 class="text-center mb-4">Popular Courses</h2>
     <div class="row g-4">
       
@@ -68,25 +55,25 @@
           "title" => "Figma",
           "videos" => 130,
           "rating" => "4.5 (200)",
-          "img" => "https://via.placeholder.com/300x150?text=Figma"
+          "img" => "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/sites/2147591000/images/kbN4A0GPTNGOna0NjzxY_file.jpg"
         ],
         [
           "title" => "iOS Development",
           "videos" => 130,
           "rating" => "4.5 (23)",
-          "img" => "https://via.placeholder.com/300x150?text=iOS"
+          "img" => "https://www.webdschool.com/img/ios-app-development.jpg"
         ],
         [
           "title" => "Android App",
           "videos" => 130,
           "rating" => "4.5 (123)",
-          "img" => "https://via.placeholder.com/300x150?text=Android"
+          "img" => "https://images.prismic.io//intuzwebsite/2caf3e7f-1704-42e2-908f-3d089da3e3ac_The+Ultimate+Guide+to+Android+App+Development.png?w=1200&q=75&auto=format,compress&fm=png8"
         ],
         [
           "title" => "Digital Marketing",
           "videos" => 130,
           "rating" => "4.5 (123)",
-          "img" => "https://via.placeholder.com/300x150?text=Marketing"
+          "img" => "https://digitallearning.eletsonline.com/wp-content/uploads/2019/04/Digital-Marketing.jpg"
         ]
       ];
 

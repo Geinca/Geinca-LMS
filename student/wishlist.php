@@ -1,8 +1,8 @@
 <?php
 $wishlist = [
   ["id" => 1, "name" => "React.js Bootcamp", "price" => "Free", "image" => "https://via.placeholder.com/300x180?text=React.js+Bootcamp"],
-  ["id" => 2, "name" => "Smart Watch", "price" => "$59.99", "image" => "https://via.placeholder.com/300x180?text=Smart+Watch"],
-  ["id" => 3, "name" => "Wireless Headphones", "price" => "$79.00", "image" => "https://via.placeholder.com/300x180?text=Wireless+Headphones"]
+  ["id" => 2, "name" => "Html Bootcamp", "price" => "$59.99", "image" => "https://via.placeholder.com/300x180?text=Smart+Watch"],
+  ["id" => 3, "name" => "Angular Bootcamp", "price" => "$79.00", "image" => "https://via.placeholder.com/300x180?text=Wireless+Headphones"]
 ];
 ?>
 
@@ -159,7 +159,7 @@ h1 {
     <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 
-  <h1>My Wishlist</h1>
+  
 
   <div class="wishlist-grid" id="wishlist">
     <?php foreach ($wishlist as $item): ?>

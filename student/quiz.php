@@ -46,32 +46,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <title>Quiz - Student Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+    <link rel="stylesheet" href="css/dashboard.css" />
     <style>
         body { display: flex; min-height: 100vh; }
-        .sidebar {
-            width: 250px; background: #343a40; color: white; padding-top: 20px;
-        }
-        .sidebar a {
-            color: white; display: block; padding: 10px 20px; text-decoration: none;
-        }
-        .sidebar a:hover, .sidebar a.active { background: #495057; }
+        
         .content { flex: 1; padding: 30px; background: #f8f9fa; }
     </style>
 </head>
 <body>
-<div class="sidebar">
-    <h4 class="text-center mb-4">Student Panel</h4>
-    <a href="dashboard.php">Dashboard</a>
-    <a href="enrolled_courses.php">Enrolled Courses</a>
-    <a href="wishlist.php">Wishlist</a>
-    <a href="recommendations.php">Recommendations</a>
-    <a href="course_player.php">Course Player</a>
-    <a href="quiz.php" class="active">Quiz</a>
-    <a href="progress.php">Progress</a>
-    <a href="discussion.php">Discussion</a>
-    <a href="certificate.php">Certificate</a>
-    <a href="../logout.php">Logout</a>
-</div>
+<?php include './partials/sidebar.php' ?>
 
 <div class="content">
     <h2>Quiz for Course ID: <?= $course_id ?></h2>
@@ -103,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endforeach; ?>
                 </div>
             <?php endforeach; ?>
-            <button type="submit" class="btn btn-success">Submit Quiz</button>
+            <button type="submit" class="btn" style="background-color: #00aeef;color:#f8f9fa">Submit Quiz</button>
         </form>
     <?php endif; ?>
 </div>
