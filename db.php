@@ -4,6 +4,7 @@ $user = "root";   // Database username
 $password = ""; // Database password
 $database = "lms"; // Database name
 
+
 // Create connection
 $conn = mysqli_connect($host, $user, $password, $database);
 
