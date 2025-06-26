@@ -1,9 +1,9 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'instructor') {
-    header("Location: ../login.php");
-    exit;
-}
+// session_start();
+// if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'instructor') {
+//     header("Location: ../login.php");
+//     exit;
+// }
 ?>
 
 <!DOCTYPE html>
@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'instructor') {
 </head>
 <body>
 
-<?php include '../partials/header.php'; ?>
+<!-- <?php include '../partials/header.php'; ?> -->
 <div class="container mt-5">
     <h1>Welcome, Instructor</h1>
     <p>This is the instructor dashboard. You can create and manage your courses here.</p>

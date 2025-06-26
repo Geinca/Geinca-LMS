@@ -10,38 +10,34 @@ body {
 
 /* Sidebar */
 .sidebar {
-  width: 60px;
-  background-color: #FFFFFF; /* Card BG */
-  border-right: 1px solid #e0e0e0;
-  padding: 0 10px;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  overflow-x: hidden;
-  transition: width 0.3s ease;
-  white-space: nowrap;
+  width: 250px; /* Full width */
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0; /* Use bottom border for horizontal layout */
+  padding: 10px 20px;
+  height: auto; /* Auto height instead of full screen */
+  position: static; /* No fixed positioning */
+  top: unset;
+  left: unset;
+  transition: none; /* Remove transition */
+  white-space: normal; /* Allow wrapping */
 }
 
 .sidebar:hover {
-  width: 250px;
-  z-index: 10;
+  z-index: auto; /* Reset z-index */
 }
+
 
 .sidebar h4 {
   font-size: 20px;
   font-weight: bold;
   color: #1E40AF; /* Primary Blue */
   margin-bottom: 30px;
-  opacity: 0;
   transition: opacity 0.3s ease;
   text-align: center;
   padding: 0 10px;
 }
 
-.sidebar:hover h4 {
-  opacity: 1;
-}
+
 
 .sidebar a {
   display: flex;
@@ -63,7 +59,6 @@ body {
 }
 
 .sidebar a span {
-  display: none;
   margin-left: 10px;
   white-space: nowrap;
 }
