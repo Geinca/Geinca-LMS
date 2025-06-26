@@ -19,16 +19,21 @@ $wishlist = [
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-
+/* Body */
+body {
+  background: #f7fafc;
+}
 
 /* Title */
 h1 {
   text-align: center;
-  font-size: 2.5rem;
-  color: #1a202c;
-  margin-bottom: 40px;
+  font-size: 3rem;
+  color: #2d3748;
+  margin: 60px 0 30px;
+  font-weight: bold;
 }
 
 /* Wishlist Grid */
@@ -37,51 +42,53 @@ h1 {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
   max-width: 1200px;
-  margin: 40px auto;
+  margin: auto;
+  padding: 0 20px 60px;
 }
 
 /* Card */
 .card {
-  background: #ffffff;
-  border-radius: 18px;
+  background: #fff;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
   position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.08);
+  transform: translateY(-8px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
 }
 
 .card img {
   width: 100%;
   height: 200px;
   object-fit: cover;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 /* Card Content */
 .card-content {
   padding: 20px;
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  flex: 1;
 }
 
 .card h3 {
-  font-size: 1.2rem;
-  color: #2d3748;
-  margin-bottom: 8px;
+  font-size: 1.3rem;
+  color: #1a202c;
+  margin-bottom: 10px;
 }
 
 .card p {
-  font-size: 1rem;
-  color: #718096;
-  margin-bottom: 16px;
+  font-size: 1.05rem;
+  color: #4a5568;
+  margin-bottom: 20px;
 }
 
 /* Buttons */
@@ -93,71 +100,90 @@ h1 {
 .actions button {
   flex: 1;
   padding: 12px 16px;
-  font-size: 14px;
+  font-size: 0.95rem;
   font-weight: 600;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.actions button:hover {
+  transform: scale(1.04);
 }
 
 .move-btn {
-  background-color: #3b82f6;
-  color: white;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
 }
 
 .move-btn:hover {
-  background-color: #2563eb;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
 }
 
 .remove-btn {
-  background-color: #ef4444;
-  color: white;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
 }
 
 .remove-btn:hover {
-  background-color: #dc2626;
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
 }
 
 /* Moved Label */
 .moved-label {
   background-color: #10b981;
   color: white;
-  font-size: 13px;
-  padding: 4px 10px;
-  border-radius: 9999px;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 16px;
+  right: 16px;
   display: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  animation: popIn 0.3s ease forwards;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Empty Message */
 .empty {
   text-align: center;
-  font-size: 20px;
+  font-size: 1.5rem;
   color: #a0aec0;
-  margin-top: 60px;
+  margin-top: 80px;
 }
+
 
   </style>
 </head>
 <body>
 
-  <!-- Optional Sidebar -->
-  <div class="sidebar">
-    <h4>Student Panel</h4>
-    <a href="dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-    <a href="enrolled_courses.php"><i class="fas fa-book"></i> Enrolled Courses</a>
-    <a href="wishlist.php"><i class="fas fa-heart"></i> Wishlist</a>
-    <a href="recommendations.php"><i class="fas fa-star"></i> Recommendations</a>
-    <a href="course_player.php"><i class="fas fa-play-circle"></i> Course Player</a>
-    <a href="quiz.php"><i class="fas fa-question-circle"></i> Quiz</a>
-    <a href="progress.php"><i class="fas fa-chart-line"></i> Progress</a>
-    <a href="discussion.php"><i class="fas fa-comments"></i> Discussion</a>
-    <a href="certificate.php"><i class="fas fa-certificate"></i> Certificate</a>
-    <a href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
-  </div>
+     <!-- Sidebar -->
+ <div class="sidebar">
+    <h4 class="text-center py-3">Student Panel</h4>
+    <a href="dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+    <a href="enrolled_courses.php"><i class="fas fa-book"></i><span>Enrolled Courses</span></a>
+    <a href="wishlist.php"><i class="fas fa-heart"></i><span>Wishlist</span></a>
+    <a href="recommendations.php"><i class="fas fa-star"></i><span>Recommendations</span></a>
+    <a href="course_player.php"><i class="fas fa-play-circle"></i><span>Course Player</span></a>
+    <a href="Doubt.php"><i class="fas fa-question-circle"></i><span>Doubt Support</span></a>
+    <a href="progress.php"><i class="fas fa-chart-line"></i><span>Progress</span></a>
+    <a href="discussion.php"><i class="fas fa-comments"></i><span>Discussion</span></a>
+    <a href="certificate.php"><i class="fas fa-certificate"></i><span>Certificate</span></a>
+    <a href="../logout.php"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+</div>
+
 
   <h1>My Wishlist</h1>
 

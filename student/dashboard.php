@@ -28,7 +28,7 @@
     <a href="wishlist.php"><i class="fas fa-heart"></i><span>Wishlist</span></a>
     <a href="recommendations.php"><i class="fas fa-star"></i><span>Recommendations</span></a>
     <a href="course_player.php"><i class="fas fa-play-circle"></i><span>Course Player</span></a>
-    <a href="quiz.php"><i class="fas fa-question-circle"></i><span>Quiz</span></a>
+    <a href="Doubt.php"><i class="fas fa-question-circle"></i><span>Doubt Support</span></a>
     <a href="progress.php"><i class="fas fa-chart-line"></i><span>Progress</span></a>
     <a href="discussion.php"><i class="fas fa-comments"></i><span>Discussion</span></a>
     <a href="certificate.php"><i class="fas fa-certificate"></i><span>Certificate</span></a>

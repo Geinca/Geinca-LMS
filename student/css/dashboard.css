@@ -2,7 +2,8 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f4f6f8;
+  background-color: #F9FAFB; /* Light Gray */
+  color: #1F2937; /* Text Primary */
   display: flex;
   flex-direction: row;
 }
@@ -10,7 +11,7 @@ body {
 /* Sidebar */
 .sidebar {
   width: 60px;
-  background-color: #ffffff;
+  background-color: #FFFFFF; /* Card BG */
   border-right: 1px solid #e0e0e0;
   padding: 0 10px;
   height: 100vh;
@@ -30,7 +31,7 @@ body {
 .sidebar h4 {
   font-size: 20px;
   font-weight: bold;
-  color: #283593;
+  color: #1E40AF; /* Primary Blue */
   margin-bottom: 30px;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -48,7 +49,7 @@ body {
   padding: 12px 10px;
   margin-bottom: 10px;
   border-radius: 8px;
-  color: #1a1a1a;
+  color: #1F2937; /* Text Primary */
   font-weight: 500;
   text-decoration: none;
   transition: background 0.3s ease, color 0.3s ease;
@@ -73,13 +74,13 @@ body {
 
 .sidebar a:hover,
 .sidebar a.active {
-  background-color: #ffc107;
-  color: #1a1a1a;
+  background-color: #F59E0B; /* Warning - Amber */
+  color: #1F2937;
 }
 
 .sidebar a:hover i,
 .sidebar a.active i {
-  color: #1a1a1a;
+  color: #1F2937;
 }
 
 /* Content Area */
@@ -92,7 +93,7 @@ body {
 .card {
   border: none;
   border-radius: 10px;
-  background: #ffffff;
+  background: #FFFFFF; /* Card BG */
 }
 
 /* Dashboard Layout */
@@ -106,7 +107,7 @@ body {
 .progress-card,
 .upcoming-card,
 .upcoming-videos-section {
-  background: #fff;
+  background: #FFFFFF;
   border-radius: 10px;
   padding: 20px;
   flex: 1;
@@ -123,8 +124,8 @@ body {
   margin: 15px 0;
   font-size: 20px;
   font-weight: bold;
-  background-color: #e0e0e0;
-  color: #333;
+  background-color: #E0E0E0;
+  color: #1F2937; /* Text Primary */
 }
 
 .label {
@@ -133,7 +134,7 @@ body {
 }
 
 .highlight {
-  color: #00aeef;
+  color: #38BDF8; /* Accent - Sky Blue */
   font-weight: bold;
 }
 
@@ -151,7 +152,7 @@ body {
 }
 
 .upcoming-card button {
-  background-color: #00aeef;
+  background-color: #1E40AF; /* Primary Blue */
   color: #fff;
   border: none;
   padding: 6px 10px;
@@ -163,10 +164,10 @@ body {
 /* Upcoming Videos */
 /* Wrapper container to hold vertical scroll */
 .videos-scroll-wrapper {
-  max-height: 300px;       /* adjust height as needed */
-  overflow-y: auto;        /* vertical scroll */
-  padding-right: 10px;     /* space so content won't hide behind scrollbar */
-  scrollbar-width: thin;   /* Firefox scrollbar style */
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px;
+  scrollbar-width: thin;
 }
 
 /* Webkit scrollbar styles for modern browsers */
@@ -180,7 +181,7 @@ body {
 }
 
 .videos-scroll-wrapper::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 174, 239, 0.6);
+  background-color: rgba(30, 64, 175, 0.6); /* Primary Blue tint */
   border-radius: 4px;
   border: 2px solid #f1f1f1;
 }
@@ -188,7 +189,7 @@ body {
 /* Scroll container now stacked vertically */
 .videos-scroll-container {
   display: flex;
-  flex-direction: column; /* stack video cards vertically */
+  flex-direction: column;
   gap: 15px;
   padding: 10px 0;
 }
@@ -196,7 +197,7 @@ body {
 /* Video cards styling */
 .video-card {
   width: 100%;
-  background: #fff;
+  background: #FFFFFF;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 3px 10px rgba(0,0,0,0.1);
@@ -225,19 +226,19 @@ body {
 }
 
 .badge.beginner {
-  background: #28a745;
+  background: #10B981; /* Success - Emerald Green */
 }
 
 .badge.intermediate {
-  background: #ffc107;
+  background: #F59E0B; /* Warning - Amber */
 }
 
 .badge.advanced {
-  background: #dc3545;
+  background: #DC3545; /* Error Red - unchanged */
 }
 
 .notify-btn {
-  background: #00aeef;
+  background: #1E40AF; /* Primary Blue */
   color: #fff;
   border: none;
   padding: 5px 12px;
@@ -246,7 +247,6 @@ body {
   font-size: 14px;
   cursor: pointer;
 }
-
 
 /* Responsive Design */
 @media (max-width: 991px) {
