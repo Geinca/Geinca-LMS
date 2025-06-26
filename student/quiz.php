@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php include './partials/sidebar.php' ?>
 
 <div class="content">
-    <h2>Quiz for Course ID: <?= $course_id ?></h2>
+    <h2>Quiz   a for Course ID: <?= $course_id ?></h2>
 
     <?php if ($score !== null): ?>
         <div class="alert alert-info">
