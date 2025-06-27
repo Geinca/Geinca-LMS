@@ -27,32 +27,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         // Check if email exists using prepared statement
-        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->store_result();
-        
-        if ($stmt->num_rows > 0) {
+        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        if ($stmt->rowCount() > 0) {
             $errors[] = "Email already registered.";
         }
-        $stmt->close();
 
         if (empty($errors)) {
             // Hash password
             $password_hash = password_hash($password, PASSWORD_DEFAULT);
-            
+
             // Insert user with prepared statement
-            $stmt = $conn->prepare("INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $fullname, $email, $password_hash, $role);
-            
-            if ($stmt->execute()) {
+            $stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)");
+            if ($stmt->execute([$fullname, $email, $password_hash, $role])) {
                 $_SESSION['registration_success'] = true;
                 header("Location: login.php");
                 exit();
             } else {
-                $errors[] = "Database error: " . $conn->error;
+                $errors[] = "Database error: " . implode(", ", $pdo->errorInfo());
             }
-            $stmt->close();
         }
     }
 }
@@ -60,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -69,23 +63,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         body {
             background-color: #f8f9fa;
         }
+
         .register-container {
             max-width: 600px;
             margin: 50px auto;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             background-color: white;
         }
+
         .form-control:focus {
             border-color: #0d6efd;
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
+
         .password-strength {
             height: 5px;
             margin-top: 5px;
             background: #eee;
         }
+
         .password-strength-bar {
             height: 100%;
             width: 0%;
@@ -94,104 +92,106 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <div class="register-container">
-        <h2 class="text-center mb-4">Create Your Account</h2>
-        
-        <?php if (!empty($errors)): ?>
-            <div class="alert alert-danger">
-                <?php foreach ($errors as $error): ?>
-                    <p class="mb-1"><?php echo htmlspecialchars($error); ?></p>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-        
-        <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" novalidate>
-            <div class="mb-3">
-                <label for="fullname" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="fullname" name="fullname" required
-                       value="<?php echo isset($fullname) ? htmlspecialchars($fullname) : ''; ?>"
-                       placeholder="Enter your full name">
-            </div>
-            
-            <div class="mb-3">
-                <label for="email" class="form-label">Email Address</label>
-                <input type="email" class="form-control" id="email" name="email" required
-                       value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>"
-                       placeholder="Enter your email">
-            </div>
-            
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required
-                       placeholder="At least 8 characters" minlength="8"
-                       oninput="checkPasswordStrength(this.value)">
-                <div class="password-strength">
-                    <div class="password-strength-bar" id="password-strength-bar"></div>
-                </div>
-                <div class="form-text">Password must be at least 8 characters long.</div>
-            </div>
-            
-            <div class="mb-4">
-                <label for="role" class="form-label">I am a:</label>
-                <select class="form-select" id="role" name="role" required>
-                    <option value="">Select your role</option>
-                    <option value="student" <?php echo (isset($role) && $role === 'student') ? 'selected' : ''; ?>>Student</option>
-                    <option value="instructor" <?php echo (isset($role) && $role === 'instructor') ? 'selected' : ''; ?>>Instructor</option>
-                </select>
-            </div>
-            
-            <div class="d-grid gap-2 mb-3">
-                <button type="submit" class="btn btn-primary btn-lg">Register</button>
-            </div>
-            
-            <div class="text-center">
-                <p>Already have an account? <a href="login.php">Log in</a></p>
-            </div>
-        </form>
-    </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    function checkPasswordStrength(password) {
-        const strengthBar = document.getElementById('password-strength-bar');
-        let strength = 0;
-        
-        if (password.length >= 8) strength += 1;
-        if (password.match(/[a-z]+/)) strength += 1;
-        if (password.match(/[A-Z]+/)) strength += 1;
-        if (password.match(/[0-9]+/)) strength += 1;
-        if (password.match(/[!@#$%^&*()_+]+/)) strength += 1;
-        
-        switch(strength) {
-            case 0:
-                strengthBar.style.width = '0%';
-                strengthBar.style.background = 'transparent';
-                break;
-            case 1:
-                strengthBar.style.width = '20%';
-                strengthBar.style.background = '#dc3545';
-                break;
-            case 2:
-                strengthBar.style.width = '40%';
-                strengthBar.style.background = '#fd7e14';
-                break;
-            case 3:
-                strengthBar.style.width = '60%';
-                strengthBar.style.background = '#ffc107';
-                break;
-            case 4:
-                strengthBar.style.width = '80%';
-                strengthBar.style.background = '#28a745';
-                break;
-            case 5:
-                strengthBar.style.width = '100%';
-                strengthBar.style.background = '#20c997';
-                break;
+<body>
+    <div class="container">
+        <div class="register-container">
+            <h2 class="text-center mb-4">Create Your Account</h2>
+
+            <?php if (!empty($errors)): ?>
+                <div class="alert alert-danger">
+                    <?php foreach ($errors as $error): ?>
+                        <p class="mb-1"><?php echo htmlspecialchars($error); ?></p>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+
+            <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" novalidate>
+                <div class="mb-3">
+                    <label for="fullname" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="fullname" name="fullname" required
+                        value="<?php echo isset($fullname) ? htmlspecialchars($fullname) : ''; ?>"
+                        placeholder="Enter your full name">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" required
+                        value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>"
+                        placeholder="Enter your email">
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required
+                        placeholder="At least 8 characters" minlength="8"
+                        oninput="checkPasswordStrength(this.value)">
+                    <div class="password-strength">
+                        <div class="password-strength-bar" id="password-strength-bar"></div>
+                    </div>
+                    <div class="form-text">Password must be at least 8 characters long.</div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="role" class="form-label">I am a:</label>
+                    <select class="form-select" id="role" name="role" required>
+                        <option value="">Select your role</option>
+                        <option value="student" <?php echo (isset($role) && $role === 'student') ? 'selected' : ''; ?>>Student</option>
+                        <option value="instructor" <?php echo (isset($role) && $role === 'instructor') ? 'selected' : ''; ?>>Instructor</option>
+                    </select>
+                </div>
+
+                <div class="d-grid gap-2 mb-3">
+                    <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                </div>
+
+                <div class="text-center">
+                    <p>Already have an account? <a href="login.php">Log in</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function checkPasswordStrength(password) {
+            const strengthBar = document.getElementById('password-strength-bar');
+            let strength = 0;
+
+            if (password.length >= 8) strength += 1;
+            if (password.match(/[a-z]+/)) strength += 1;
+            if (password.match(/[A-Z]+/)) strength += 1;
+            if (password.match(/[0-9]+/)) strength += 1;
+            if (password.match(/[!@#$%^&*()_+]+/)) strength += 1;
+
+            switch (strength) {
+                case 0:
+                    strengthBar.style.width = '0%';
+                    strengthBar.style.background = 'transparent';
+                    break;
+                case 1:
+                    strengthBar.style.width = '20%';
+                    strengthBar.style.background = '#dc3545';
+                    break;
+                case 2:
+                    strengthBar.style.width = '40%';
+                    strengthBar.style.background = '#fd7e14';
+                    break;
+                case 3:
+                    strengthBar.style.width = '60%';
+                    strengthBar.style.background = '#ffc107';
+                    break;
+                case 4:
+                    strengthBar.style.width = '80%';
+                    strengthBar.style.background = '#28a745';
+                    break;
+                case 5:
+                    strengthBar.style.width = '100%';
+                    strengthBar.style.background = '#20c997';
+                    break;
+            }
         }
-    }
-</script>
+    </script>
 </body>
+
 </html>

@@ -1,17 +1,16 @@
 <?php
-session_start();
-require_once '../auth/db.php';
+// session_start();
+require_once 'C:/xampp/htdocs/geinca/Geinca-LMS/db.php';
 
-// Redirect if not logged in or not admin
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../auth/login.php");
-    exit;
-}
+// // Redirect if not logged in or not admin
+// if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+//     header("Location: ../login.php");
+//     exit;
+// }
 
 // Fetch Stats
 $total_users = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
 $active_classes = $pdo->query("SELECT COUNT(*) FROM classes")->fetchColumn();
-$new_notifications = $pdo->query("SELECT COUNT(*) FROM notifications WHERE is_read = 0")->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,16 +19,18 @@ $new_notifications = $pdo->query("SELECT COUNT(*) FROM notifications WHERE is_re
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Dashboard | LMS ERP</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
 
   <!-- Header -->
-  <header class="bg-gray-800 text-white px-6 py-4 flex justify-between items-center shadow-md">
+  <header class="ml-64 bg-gray-800 text-white px-6 py-4 flex justify-between items-center shadow-md">
     <h1 class="text-xl font-bold">LMS ERP - Admin Dashboard</h1>
     <div class="space-x-4">
-      <span class="text-sm">Welcome, <?= htmlspecialchars($_SESSION['name']) ?></span>
-      <a href="../auth/logout.php" class="text-sm hover:underline">
+      <span class="text-sm">Welcome, <?= (htmlspecialchars($_SESSION['name'])) ?? "Admin" ?></span>
+      <a href="../logout.php" class="text-sm hover:underline">
         <i class="fas fa-sign-out-alt"></i> Logout
       </a>
     </div>
@@ -37,10 +38,10 @@ $new_notifications = $pdo->query("SELECT COUNT(*) FROM notifications WHERE is_re
 
   <div class="flex flex-1">
     <!-- Sidebar -->
-    <?php include('./partials/sidebar.php'); ?>
+    <?php include __DIR__ . '/../partials/sidebar.php'; ?>
 
     <!-- Main Dashboard -->
-    <main class="flex-1 p-6">
+    <main class="flex-1 p-6 ml-64">
       <h2 class="text-2xl font-semibold text-gray-800 mb-6">Overview</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
