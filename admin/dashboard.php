@@ -37,7 +37,7 @@ $new_notifications = $pdo->query("SELECT COUNT(*) FROM notifications WHERE is_re
 
   <div class="flex flex-1">
     <!-- Sidebar -->
-    <?php include('../components/admin-sidebar.php'); ?>
+    <?php include('./partials/sidebar.php'); ?>
 
     <!-- Main Dashboard -->
     <main class="flex-1 p-6">
