@@ -34,8 +34,8 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     </a>
                 </li>
                 <li>
-                    <a href="../admin/manage_courses.php"
-                       class="flex items-center px-4 py-2 rounded-lg <?= ($currentPage == 'manage_courses.php') ? 'bg-gray-800 text-white' : 'hover:bg-gray-700 text-gray-300' ?>">
+                    <a href="../admin/classes-management.php"
+                       class="flex items-center px-4 py-2 rounded-lg <?= ($currentPage == 'classes-management.php') ? 'bg-gray-800 text-white' : 'hover:bg-gray-700 text-gray-300' ?>">
                         <i class="fas fa-book mr-3"></i> Manage Classes
                     </a>
                 </li>

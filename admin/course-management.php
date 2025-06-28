@@ -1,5 +1,5 @@
 <?php
-require_once 'C:/xampp/htdocs/geinca/Geinca-LMS/db.php';
+require_once 'C:/xampp/htdocs/Geinca-LMS/db.php';
 
 class ClassManager {
     private $pdo;
@@ -7,10 +7,10 @@ class ClassManager {
         $this->pdo = $pdo;
     }
     public function getAllClasses() {
-        return $this->pdo->query("SELECT * FROM classes ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+        return $this->pdo->query("SELECT * FROM classes ORDER BY title")->fetchAll(PDO::FETCH_ASSOC);
     }
     public function createClass($name) {
-        $stmt = $this->pdo->prepare("INSERT INTO classes (name) VALUES (?)");
+        $stmt = $this->pdo->prepare("INSERT INTO classes (title) VALUES (?)");
         return $stmt->execute([$name]);
     }
 }
@@ -70,7 +70,7 @@ class CourseManager {
         return $stmt->execute([$id]);
     }
     public function getAllCourses() {
-        $query = "SELECT c.*, cl.name as class_name, s.name as subject_name, u.name as instructor_name 
+        $query = "SELECT c.*, cl.title as class_name, s.name as subject_name, u.name as instructor_name 
                   FROM courses c
                   LEFT JOIN classes cl ON c.class_id = cl.id
                   LEFT JOIN subjects s ON c.subject_id = s.id
@@ -176,7 +176,7 @@ $courses = $courseManager->getAllCourses();
                 <select name="class_id" class="w-full border p-2 rounded" required>
                     <option value="">Select Class</option>
                     <?php foreach ($classes as $class): ?>
-                        <option value="<?= $class['id'] ?>"><?= htmlspecialchars($class['name']) ?></option>
+                        <option value="<?= $class['id'] ?>"><?= htmlspecialchars($class['title']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -247,7 +247,7 @@ $courses = $courseManager->getAllCourses();
                 <select name="subject_class_id" class="w-full border p-2 rounded" required>
                     <option value="">Select Class</option>
                     <?php foreach ($classes as $class): ?>
-                        <option value="<?= $class['id'] ?>"><?= htmlspecialchars($class['name']) ?></option>
+                        <option value="<?= $class['id'] ?>"><?= htmlspecialchars($class['title']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -332,7 +332,7 @@ $courses = $courseManager->getAllCourses();
                 <select name="class_id" id="edit_class_id" class="w-full border p-2 rounded" required>
                     <option value="">Select Class</option>
                     <?php foreach ($classes as $class): ?>
-                        <option value="<?= $class['id'] ?>"><?= htmlspecialchars($class['name']) ?></option>
+                        <option value="<?= $class['id'] ?>"><?= htmlspecialchars($class['title']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

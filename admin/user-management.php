@@ -1,14 +1,24 @@
 <?php
-require_once 'C:/xampp/htdocs/geinca/Geinca-LMS/db.php';
-// session_start();
 
-// Check filter for user status
-$status = ($_GET['show'] ?? 'active') === 'inactive' ? 'inactive' : 'active';
+require_once 'C:/xampp/htdocs/Geinca-LMS/db.php';
 
-// Fetch users based on id
-$stmt = $pdo->prepare("SELECT id, name, email, role, status FROM users WHERE status = ? ORDER BY created_at DESC");
-$stmt->execute([$status]);
-$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+try {
+    // Check filter for user status
+    $status = ($_GET['show'] ?? 'active') === 'inactive' ? 'inactive' : 'active';
+
+    // Fetch users based on status
+    $stmt = $pdo->prepare("SELECT id, name, email, role, status, created_at FROM users WHERE status = ? ORDER BY created_at DESC");
+    $stmt->execute([$status]);
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    if ($users === false) {
+        throw new Exception("Failed to fetch users");
+    }
+} catch (PDOException $e) {
+    die("Database error: " . $e->getMessage());
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
