@@ -1,5 +1,5 @@
 <?php
-require_once 'C:/xampp/htdocs/geinca/Geinca-LMS/db.php';
+require_once 'C:/xampp/htdocs/Geinca-LMS/db.php';
 
 // Initialize lesson data
 $lesson = [
