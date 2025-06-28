@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Enrolled Courses</title>
+  <title>All Courses</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -20,7 +20,7 @@
 
   <!-- Main Content -->
   <div class="ml-64 md:ml-64 p-4 md:p-8">
-    <h2 class="text-2xl md:text-3xl font-bold text-left mb-8 text-gray-800">Your Courses</h2>
+    <h2 class="text-2xl md:text-3xl font-bold text-left mb-8 text-gray-800">All Courses</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <?php
       $courses = [
