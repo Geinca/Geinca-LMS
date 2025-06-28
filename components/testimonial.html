@@ -1,0 +1,383 @@
+<section class="review-section">
+  <div class="review-container">
+    <div class="review-header">
+      <h2>What Our Students Say</h2>
+      <p>Join thousands of satisfied learners who transformed their careers</p>
+    </div>
+
+    <div class="review-slider">
+      <div class="review-card active">
+        <div class="review-content">
+          <div class="review-quote-icon">
+            <i class="fas fa-quote-left"></i>
+          </div>
+          <p class="review-text">EduMaster completely changed my career trajectory. The Full Stack Developer path gave me all the skills I needed to land my dream job at Google. The projects were practical and the instructors were incredibly supportive.</p>
+          <div class="review-author">
+            <img src="images/testimonial1.jpg" alt="Sarah Johnson">
+            <div class="review-author-info">
+              <h4>Sarah Johnson</h4>
+              <p>Software Engineer at Google</p>
+              <div class="review-rating">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-content">
+          <div class="review-quote-icon">
+            <i class="fas fa-quote-left"></i>
+          </div>
+          <p class="review-text">As a working professional, I needed flexible learning options. EduMaster's self-paced courses with hands-on projects were perfect. I could apply what I learned immediately at work and got promoted within 6 months.</p>
+          <div class="review-author">
+            <img src="images/testimonial2.jpg" alt="Michael Chen">
+            <div class="review-author-info">
+              <h4>Michael Chen</h4>
+              <p>Data Analyst at Amazon</p>
+              <div class="review-rating">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-content">
+          <div class="review-quote-icon">
+            <i class="fas fa-quote-left"></i>
+          </div>
+          <p class="review-text">The UX Design courses were comprehensive and up-to-date with industry standards. The portfolio projects helped me build an impressive case study that landed me multiple job offers. The community support was invaluable.</p>
+          <div class="review-author">
+            <img src="images/testimonial3.jpg" alt="Emma Rodriguez">
+            <div class="review-author-info">
+              <h4>Emma Rodriguez</h4>
+              <p>UX Designer at Spotify</p>
+              <div class="review-rating">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                <i class="fas fa-star"></i><i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="review-controls">
+        <button class="review-btn review-prev"><i class="fas fa-chevron-left"></i></button>
+        <div class="review-dots">
+          <span class="review-dot active"></span>
+          <span class="review-dot"></span>
+          <span class="review-dot"></span>
+        </div>
+        <button class="review-btn review-next"><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<style>
+    
+.review-section {
+  padding: 100px 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.review-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('images/testimonials-pattern.svg') no-repeat;
+  background-size: cover;
+  opacity: 0.05;
+  z-index: 0;
+}
+
+.review-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.review-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.review-slider {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  padding: 0 40px;
+}
+
+.review-card {
+  background: white;
+  border-radius: 16px;
+  padding: 50px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  display: none;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.review-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+}
+
+.review-card.active {
+  display: block;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.review-content {
+  position: relative;
+}
+
+.review-quote-icon {
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  font-size: 4rem;
+  color: rgba(108, 92, 231, 0.08);
+  z-index: 0;
+}
+
+.review-text {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  margin-bottom: 35px;
+  position: relative;
+  z-index: 2;
+  color: var(--dark-color);
+  font-weight: 400;
+  font-style: italic;
+  padding-left: 20px;
+  border-left: 3px solid rgba(108, 92, 231, 0.2);
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(245, 246, 250, 0.6);
+  padding: 20px;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+}
+
+.review-author img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.review-author-info h4 {
+  font-family: var(--font-primary);
+  margin-bottom: 5px;
+  font-size: 1.2rem;
+  color: var(--dark-color);
+  font-weight: 600;
+}
+
+.review-author-info p {
+  color: var(--gray-dark);
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+
+.review-rating {
+  color: var(--warning-color);
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+}
+
+/* Controls */
+.review-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 40px;
+  position: relative;
+}
+
+.review-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  color: var(--primary-color);
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 5px 20px rgba(108, 92, 231, 0.15);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.review-btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.review-prev {
+  left: -80px;
+}
+
+.review-next {
+  right: -80px;
+}
+
+.review-dots {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  width: 100%;
+}
+
+.review-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: rgba(108, 92, 231, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.review-dot::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  transform: scale(0);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.review-dot.active::after {
+  transform: scale(1);
+}
+
+.review-dot.active {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .review-slider {
+    padding: 0 20px;
+  }
+
+  .review-btn {
+    position: static;
+    transform: none;
+  }
+
+  .review-prev {
+    left: 0;
+    margin-right: auto;
+  }
+
+  .review-next {
+    right: 0;
+    margin-left: auto;
+  }
+
+  .review-card {
+    padding: 40px 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .review-section {
+    padding: 80px 0;
+  }
+
+  .review-text {
+    font-size: 1.1rem;
+    padding-left: 15px;
+  }
+
+  .review-author {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .review-author-info {
+    text-align: center;
+  }
+
+  .review-controls {
+    margin-top: 30px;
+  }
+}
+
+@media (max-width: 576px) {
+  .review-card {
+    padding: 30px 20px;
+  }
+
+  .review-text {
+    font-size: 1rem;
+    margin-bottom: 25px;
+  }
+
+  .review-quote-icon {
+    font-size: 3rem;
+    top: -10px;
+    left: -10px;
+  }
+}
+</style>

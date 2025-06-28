@@ -1,9 +1,9 @@
 <?php
-// session_start();
-// if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'student') {
-//     header('Location: ../login.php');
-//     exit;
-// }
+session_start();
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'student') {
+    header('Location: ../login.php');
+    exit;
+}
 
 // Demo data - in a real app, fetch from database
 $student = [
@@ -90,7 +90,7 @@ $recentCourses = [
     <!-- Main Content -->
     <div class="flex-1 p-6 md:p-8 ml-64">
       <!-- Header -->
-      <div class="flex justify-between items-center mb-8">
+      <div class="flex justify-between items-center mb-8 ml-8">
         <div>
           <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Welcome, <?= $student['name'] ?>!</h1>
           <p class="text-gray-600">Here's your learning dashboard</p>
