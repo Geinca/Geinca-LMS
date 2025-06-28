@@ -1,71 +1,67 @@
 <?php
-require_once 'C:/xampp/htdocs/geinca/Geinca-LMS/db.php';
+// Demo data for the class
+$class = [
+    'id' => 1,
+    'title' => 'Introduction to Web Development',
+    'description' => 'Learn the fundamentals of web development including HTML, CSS, and JavaScript.'
+];
 
-// Get class ID from URL
-$classId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+// Demo data for sections and lessons
+$sections = [
+    [
+        'id' => 1,
+        'section_title' => 'HTML Basics',
+        'section_number' => 1,
+        'lessons' => [
+            [
+                'id' => 1,
+                'title' => 'Introduction to HTML',
+                'description' => 'Learn the basic structure of HTML documents',
+                'video_url' => 'https://www.youtube.com/embed/pQN-pnXPaVg',
+                'duration' => 600, // 10 minutes in seconds
+                'position' => 1,
+                'is_preview' => true
+            ],
+            [
+                'id' => 2,
+                'title' => 'HTML Elements and Tags',
+                'description' => 'Understanding common HTML elements',
+                'video_url' => 'https://www.youtube.com/embed/UB1O30fR-EE',
+                'duration' => 900, // 15 minutes
+                'position' => 2,
+                'is_preview' => false
+            ]
+        ]
+    ],
+    [
+        'id' => 2,
+        'section_title' => 'CSS Fundamentals',
+        'section_number' => 2,
+        'lessons' => [
+            [
+                'id' => 3,
+                'title' => 'Introduction to CSS',
+                'description' => 'Learn how to style your web pages',
+                'video_url' => 'https://www.youtube.com/embed/yfoY53QXEnI',
+                'duration' => 720, // 12 minutes
+                'position' => 1,
+                'is_preview' => true
+            ],
+            [
+                'id' => 4,
+                'title' => 'CSS Selectors',
+                'description' => 'Different ways to select elements in CSS',
+                'video_url' => 'https://www.youtube.com/embed/l1mER1bV0N0',
+                'duration' => 840, // 14 minutes
+                'position' => 2,
+                'is_preview' => false
+            ]
+        ]
+    ]
+];
 
-// Fetch class details
-$class = $pdo->prepare("SELECT id, title, description FROM classes WHERE id = ?");
-$class->execute([$classId]);
-$class = $class->fetch(PDO::FETCH_ASSOC);
-
-if (!$class) {
-    die("Class not found");
-}
-
-// Fetch all sections for this class
-$sections = $pdo->prepare("
-    SELECT 
-        s.id, 
-        s.title AS section_title, 
-        s.position AS section_number,
-        COUNT(l.id) AS lesson_count
-    FROM sections s
-    LEFT JOIN lessons l ON s.id = l.section_id
-    WHERE s.class_id = ?
-    GROUP BY s.id
-    ORDER BY s.position
-");
-$sections->execute([$classId]);
-$sections = $sections->fetchAll(PDO::FETCH_ASSOC);
-
-// Get the first video URL (for initial display)
-$firstVideo = $pdo->prepare("
-    SELECT l.video_url 
-    FROM lessons l
-    JOIN sections s ON l.section_id = s.id
-    WHERE s.class_id = ?
-    ORDER BY s.position, l.position
-    LIMIT 1
-");
-$firstVideo->execute([$classId]);
-$firstVideo = $firstVideo->fetch(PDO::FETCH_ASSOC);
-$videoUrl = $firstVideo ? $firstVideo['video_url'] : '';
-
-// For each section, get its lessons
-foreach ($sections as &$section) {
-    $lessons = $pdo->prepare("
-        SELECT 
-            id, 
-            title, 
-            description, 
-            video_url,
-            duration,
-            position,
-            is_preview
-        FROM lessons
-        WHERE section_id = ?
-        ORDER BY position
-    ");
-    $lessons->execute([$section['id']]);
-    $section['lessons'] = $lessons->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Add video_url to section for the first lesson (for section click)
-    if (!empty($section['lessons'])) {
-        $section['video_url'] = $section['lessons'][0]['video_url'];
-    }
-}
-unset($section); // Break the reference
+// Get the first video URL for initial display
+$videoUrl = !empty($sections[0]['lessons'][0]['video_url']) ? $sections[0]['lessons'][0]['video_url'] : '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -116,12 +112,12 @@ unset($section); // Break the reference
           <div class="mb-8">
             <h2 class="text-xl font-semibold text-gray-800 mb-3">About this class</h2>
             <p class="text-gray-600 mb-4">
-              <?php echo htmlspecialchars($class['description'] ?: "Learn ".$class['title']." and become job-ready. This class includes hands-on training, real-world examples, and portfolio projects."); ?>
+              <?php echo htmlspecialchars($class['description']); ?>
             </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p class="text-gray-700"><strong class="text-gray-800">Skill Level:</strong> Beginner to Advanced</p>
+                <p class="text-gray-700"><strong class="text-gray-800">Skill Level:</strong> Beginner</p>
                 <p class="text-gray-700"><strong class="text-gray-800">Language:</strong> English</p>
                 <p class="text-gray-700"><strong class="text-gray-800">Captions:</strong> EN, DE, FR, ES</p>
               </div>
@@ -199,7 +195,8 @@ unset($section); // Break the reference
           // Add 'active' style to clicked one
           item.classList.add('bg-blue-100', 'ring-2', 'ring-blue-500');
           
-          // Send progress update to server
+          // Send progress update to server (commented out as we're using demo data)
+          /*
           fetch('update_progress.php', {
             method: 'POST',
             headers: {
@@ -209,6 +206,7 @@ unset($section); // Break the reference
           }).then(res => res.text()).then(data => {
             console.log("Progress updated:", data);
           });
+          */
         }
       });
     });
