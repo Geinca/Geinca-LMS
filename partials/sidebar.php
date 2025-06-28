@@ -1,5 +1,5 @@
 <?php
-$role = $_SESSION['user_role'] ?? 'admin';
+$role = $_SESSION['user_role'] ?? 'student';
 $currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 
@@ -75,6 +75,30 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <a href="../student/browse_courses.php"
                        class="flex items-center px-4 py-2 rounded-lg <?= ($currentPage == 'browse_courses.php') ? 'bg-gray-800 text-white' : 'hover:bg-gray-700 text-gray-300' ?>">
                         <i class="fas fa-search mr-3"></i> Browse Courses
+                    </a>
+                </li>
+                <li>
+                    <a href="../student/classes.php"
+                       class="flex items-center px-4 py-2 rounded-lg <?= ($currentPage == 'classes.php') ? 'bg-gray-800 text-white' : 'hover:bg-gray-700 text-gray-300' ?>">
+                        <i class="fas fa-search mr-3"></i> My classes
+                    </a>
+                </li>
+                <li>
+                    <a href="../student/exam.php"
+                       class="flex items-center px-4 py-2 rounded-lg <?= ($currentPage == 'exam.php') ? 'bg-gray-800 text-white' : 'hover:bg-gray-700 text-gray-300' ?>">
+                        <i class="fas fa-search mr-3"></i> Ongoing Exams
+                    </a>
+                </li>
+                <li>
+                    <a href="../student/quiz.php"
+                       class="flex items-center px-4 py-2 rounded-lg <?= ($currentPage == 'quiz.php') ? 'bg-gray-800 text-white' : 'hover:bg-gray-700 text-gray-300' ?>">
+                        <i class="fas fa-search mr-3"></i> Ongoing Quizes
+                    </a>
+                </li>
+                <li>
+                    <a href="../student/progress.php"
+                       class="flex items-center px-4 py-2 rounded-lg <?= ($currentPage == 'progress.php') ? 'bg-gray-800 text-white' : 'hover:bg-gray-700 text-gray-300' ?>">
+                        <i class="fas fa-search mr-3"></i> Progress card
                     </a>
                 </li>
             <?php endif; ?>
