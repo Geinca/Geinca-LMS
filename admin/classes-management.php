@@ -13,8 +13,28 @@ $lesson = [
     'is_preview' => 0
 ];
 
-// Handle form submission
+// Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Check if this is a course creation request
+    if (isset($_POST['add_course'])) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO classes (title, description, created_at) 
+                                  VALUES (?, ?, NOW())");
+            $stmt->execute([
+                trim($_POST['course_title']),
+                trim($_POST['course_description'])
+            ]);
+            
+            // Return the new course ID
+            $newCourseId = $pdo->lastInsertId();
+            echo json_encode(['success' => true, 'course_id' => $newCourseId]);
+            exit;
+        } catch (PDOException $e) {
+            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+            exit;
+        }
+    }
+    
     // Check if this is a section creation request
     if (isset($_POST['add_section'])) {
         try {
@@ -310,7 +330,12 @@ function formatDuration($seconds) {
       
       <form id="sectionForm" class="space-y-4">
         <div>
-          <label for="class_id" class="block text-gray-700 mb-2 font-medium">Course*</label>
+          <div class="flex justify-between items-center mb-2">
+            <label for="class_id" class="block text-gray-700 font-medium">Course*</label>
+            <button type="button" onclick="openCourseModal()" class="text-sm text-blue-600 hover:underline">
+              <i class="fas fa-plus mr-1"></i>Add New Course
+            </button>
+          </div>
           <select name="class_id" id="class_id" class="w-full px-4 py-2 border rounded-lg" required>
             <option value="">— Select Course —</option>
             <?php foreach ($classes as $class): ?>
@@ -335,6 +360,39 @@ function formatDuration($seconds) {
           </button>
           <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
             Save Section
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Course Creation Modal -->
+<div id="courseModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white rounded-lg w-full max-w-md mx-4">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold">Add New Course</h3>
+        <button onclick="closeCourseModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+      </div>
+      
+      <form id="courseForm" class="space-y-4">
+        <div>
+          <label for="course_title" class="block text-gray-700 mb-2 font-medium">Course Title*</label>
+          <input type="text" name="course_title" id="course_title" class="w-full px-4 py-2 border rounded-lg" required>
+        </div>
+        
+        <div>
+          <label for="course_description" class="block text-gray-700 mb-2 font-medium">Description</label>
+          <textarea name="course_description" id="course_description" class="w-full px-4 py-2 border rounded-lg"></textarea>
+        </div>
+        
+        <div class="flex justify-end space-x-3 pt-4">
+          <button type="button" onclick="closeCourseModal()" class="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">
+            Cancel
+          </button>
+          <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            Save Course
           </button>
         </div>
       </form>
@@ -403,6 +461,18 @@ function closeSectionModal() {
   modal.classList.add('hidden');
 }
 
+// Open course creation modal
+function openCourseModal() {
+  const modal = document.getElementById('courseModal');
+  modal.classList.remove('hidden');
+}
+
+// Close course creation modal
+function closeCourseModal() {
+  const modal = document.getElementById('courseModal');
+  modal.classList.add('hidden');
+}
+
 // Handle section form submission
 document.getElementById('sectionForm').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -441,6 +511,44 @@ document.getElementById('sectionForm').addEventListener('submit', function(e) {
   .catch(error => {
     console.error('Error:', error);
     alert('An error occurred while creating the section');
+  });
+});
+
+// Handle course form submission
+document.getElementById('courseForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const formData = new FormData(this);
+  formData.append('add_course', '1');
+  
+  fetch(window.location.href, {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Add the new course to the dropdown in section modal
+      const courseTitle = document.getElementById('course_title').value;
+      
+      const option = document.createElement('option');
+      option.value = data.course_id;
+      option.textContent = courseTitle;
+      option.selected = true;
+      
+      const select = document.getElementById('class_id');
+      select.appendChild(option);
+      
+      // Close the modal and reset the form
+      closeCourseModal();
+      this.reset();
+    } else {
+      alert('Error: ' + (data.error || 'Failed to create course'));
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred while creating the course');
   });
 });
 
