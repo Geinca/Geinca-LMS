@@ -1,6 +1,6 @@
 <?php
 // session_start();
-require_once 'C:/xampp/htdocs/Geinca-LMS/db.php';
+require_once 'C:/xampp/htdocs/geinca/Geinca-LMS/db.php';
 
 // // Redirect if not logged in or not admin
 // if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
