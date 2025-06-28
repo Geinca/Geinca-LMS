@@ -1,5 +1,5 @@
 <?php
-$role = $_SESSION['user_role'] ?? 'student';
+$role = $_SESSION['user_role'] ?? 'admin';
 $currentPage = basename($_SERVER['PHP_SELF']);
 ?>
 
