@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LearnHub - Online Courses</title>
+    <title>Unique Digita - Online Courses</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/navpro.css">
     <link rel="stylesheet" href="assets/css/style.css">
@@ -197,11 +197,6 @@
                     <input type="text" placeholder="Search for courses">
                 </div>
                 
-                <div class="cart-icon" id="cartIcon" style="opacity: 0;">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count" id="cartCount">0</span>
-                </div>
-                
                 <div class="user-avatar" id="userAvatar">JS</div>
                 
                 <button class="mobile-nav-btn" id="mobileNavBtn">
@@ -239,7 +234,7 @@
     <!-- Login Required Popup -->
     <div class="login-required" id="loginRequired">
         <h3>Login Required</h3>
-        <p>Please login or sign up to add courses to your cart.</p>
+        <p>Please login or sign up to access this feature.</p>
         <button id="goToLoginBtn">Go to Login</button>
     </div>
     
@@ -284,128 +279,82 @@
     <div class="container">
         <h1>Class Courses</h1>
         
-        <!-- Course Tabs -->
-       <?php
-// Connect to database (example using PDO)
-$pdo = new PDO('mysql:host=localhost;dbname=lms', 'root', '');
+        <!-- Class Tabs Section -->
+        <div class="class-tabs">
+            <?php
+            // Database connection
+            $pdo = new PDO('mysql:host=localhost;dbname=lms', 'root', '');
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Fetch all classes
-$classesQuery = $pdo->query("SELECT id, title FROM classes WHERE is_published = 1");
-$classes = $classesQuery->fetchAll(PDO::FETCH_ASSOC);
-?>
+            // Fetch all published classes
+            $classesQuery = $pdo->query("SELECT id, title FROM classes WHERE is_published = 1");
+            $classes = $classesQuery->fetchAll(PDO::FETCH_ASSOC);
+            ?>
 
-<div class="tabs">
-    <?php foreach ($classes as $index => $class): ?>
-        <div class="tab <?= $index === 0 ? 'active' : '' ?>" data-tab="class<?= $class['id'] ?>">
-            <?= htmlspecialchars($class['title']) ?>
-        </div>
-    <?php endforeach; ?>
-</div>
-        
-        <!-- Class 8 Courses -->
-<!-- Class Tabs Section -->
-<div class="class-tabs">
-    <?php
-    // Database connection
-    $pdo = new PDO('mysql:host=localhost;dbname=lms', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            <!-- Tabs Navigation -->
+            <div class="tab-nav">
+                <?php foreach ($classes as $index => $class): ?>
+                    <button class="tab-btn <?= $index === 0 ? 'active' : '' ?>" 
+                            onclick="openTab(event, 'class<?= $class['id'] ?>')">
+                        <?= htmlspecialchars($class['title']) ?>
+                    </button>
+                <?php endforeach; ?>
+            </div>
 
-    // Fetch all published classes
-    $classesQuery = $pdo->query("SELECT id, title FROM classes WHERE is_published = 1");
-    $classes = $classesQuery->fetchAll(PDO::FETCH_ASSOC);
-    ?>
-
-    <!-- Tabs Navigation -->
-    <div class="tab-nav">
-        <?php foreach ($classes as $index => $class): ?>
-            <button class="tab-btn <?= $index === 0 ? 'active' : '' ?>" 
-                    onclick="openTab(event, 'class<?= $class['id'] ?>')">
-                <?= htmlspecialchars($class['title']) ?>
-            </button>
-        <?php endforeach; ?>
-    </div>
-
-    <!-- Tabs Content -->
-    <div class="tabs-content">
-        <?php foreach ($classes as $index => $class): ?>
-            <div id="class<?= $class['id'] ?>" class="tab-content <?= $index === 0 ? 'active' : '' ?>">
-                <div class="course-grid">
-                    <?php
-                    try {
-                        // Fetch published courses for this class with instructor information
-                        $coursesQuery = $pdo->prepare("
-                            SELECT 
-                                c.id, 
-                                c.class_id,
-                                c.title, 
-                                c.description, 
-                                c.price,
-                                c.thumbnail,
-                                u.name AS instructor_name
-                            FROM courses c
-                            LEFT JOIN users u ON c.instructor_id = u.id
-                            WHERE c.class_id = ? AND c.is_published = 1
-                        ");
-                        $coursesQuery->execute([$class['id']]);
-                        $courses = $coursesQuery->fetchAll(PDO::FETCH_ASSOC);
-                        
-                        if (empty($courses)) {
-                            echo "<p>No published courses available for this class.</p>";
-                        }
-                        
-                        foreach ($courses as $course):
-                            // Format price
-                            $formattedPrice = number_format($course['price'], 2);
-                    ?>
-                        <div class="course-card">
-                            <a href="./classes.php?id=<?= $course['id'] ?>&class_id=<?= $class['id'] ?>" class="course-link">
-                                <img src="<?= htmlspecialchars($course['thumbnail'] ?? 'assets/images/default-course.jpg') ?>" 
-                                     alt="<?= htmlspecialchars($course['title']) ?>" class="course-img">
-                                <div class="course-info">
-                                    <h3 class="course-title"><?= htmlspecialchars($course['title']) ?></h3>
-                                    <p class="course-instructor">By <?= htmlspecialchars($course['instructor_name'] ?? 'Unknown Instructor') ?></p>
-                                    <p class="course-price">₹<?= $formattedPrice ?></p>
+            <!-- Tabs Content -->
+            <div class="tabs-content">
+                <?php foreach ($classes as $index => $class): ?>
+                    <div id="class<?= $class['id'] ?>" class="tab-content <?= $index === 0 ? 'active' : '' ?>">
+                        <div class="course-grid">
+                            <?php
+                            try {
+                                // Fetch published courses for this class with instructor information
+                                $coursesQuery = $pdo->prepare("
+                                    SELECT 
+                                        c.id, 
+                                        c.class_id,
+                                        c.title, 
+                                        c.description, 
+                                        c.price,
+                                        c.thumbnail,
+                                        u.name AS instructor_name
+                                    FROM courses c
+                                    LEFT JOIN users u ON c.instructor_id = u.id
+                                    WHERE c.class_id = ? AND c.is_published = 1
+                                ");
+                                $coursesQuery->execute([$class['id']]);
+                                $courses = $coursesQuery->fetchAll(PDO::FETCH_ASSOC);
+                                
+                                if (empty($courses)) {
+                                    echo "<p>No published courses available for this class.</p>";
+                                }
+                                
+                                foreach ($courses as $course):
+                                    // Format price
+                                    $formattedPrice = number_format($course['price'], 2);
+                            ?>
+                                <div class="course-card">
+                                    <a href="./classes.php?id=<?= $course['id'] ?>&class_id=<?= $class['id'] ?>" class="course-link">
+                                        <img src="<?= htmlspecialchars($course['thumbnail'] ?? 'assets/images/default-course.jpg') ?>" 
+                                             alt="<?= htmlspecialchars($course['title']) ?>" class="course-img">
+                                        <div class="course-info">
+                                            <h3 class="course-title"><?= htmlspecialchars($course['title']) ?></h3>
+                                            <p class="course-instructor">By <?= htmlspecialchars($course['instructor_name'] ?? 'Unknown Instructor') ?></p>
+                                            <p class="course-price">₹<?= $formattedPrice ?></p>
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
+                            <?php endforeach; ?>
+                            <?php } catch (PDOException $e) { ?>
+                                <div class="error">
+                                    Error loading courses: <?= htmlspecialchars($e->getMessage()) ?>
+                                </div>
+                            <?php } ?>
                         </div>
-                    <?php endforeach; ?>
-                    <?php } catch (PDOException $e) { ?>
-                        <div class="error">
-                            Error loading courses: <?= htmlspecialchars($e->getMessage()) ?>
-                        </div>
-                    <?php } ?>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</div>
-
-
-    
-    <!-- Shopping Cart -->
-    <div class="cart-overlay" id="cartOverlay"></div>
-    
-    <div class="cart-modal" id="cartModal">
-        <div class="cart-header">
-            <h2 class="cart-title">Your Cart</h2>
-            <button class="close-cart" id="closeCart">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="cart-items" id="cartItems">
-            <div class="empty-cart">
-                <i class="fas fa-shopping-cart" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                <p>Your cart is empty</p>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
-        
-        <div class="cart-total">
-            <span>Total:</span>
-            <span id="cartTotal">₹0</span>
-        </div>
-        
-        <button class="checkout-btn">Checkout</button>
     </div>
     
     <div id="test"></div>
@@ -491,521 +440,334 @@ $classes = $classesQuery->fetchAll(PDO::FETCH_ASSOC);
             });
         });
         
-        // Shopping Cart
-        const cartIcon = document.getElementById('cartIcon');
-        const cartModal = document.getElementById('cartModal');
-        const cartOverlay = document.getElementById('cartOverlay');
-        const closeCart = document.getElementById('closeCart');
-        const cartCount = document.getElementById('cartCount');
-        const cartItems = document.getElementById('cartItems');
-        const cartTotal = document.getElementById('cartTotal');
-        
-        let cart = [];
-        
-        // Open/Close Cart
-        cartIcon.addEventListener('click', () => {
-            if (!isLoggedIn()) {
-                showLoginRequired();
-                return;
-            }
-            cartModal.classList.add('active');
-            cartOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
-        
-        closeCart.addEventListener('click', () => {
-            cartModal.classList.remove('active');
-            cartOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-        
-        cartOverlay.addEventListener('click', () => {
-            cartModal.classList.remove('active');
-            cartOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        });
-        
-        // Add to Cart
-        const addToCartButtons = document.querySelectorAll('.add-to-cart');
-        
-        addToCartButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                if (!isLoggedIn()) {
-                    showLoginRequired();
-                    return;
-                }
-                
-                const id = button.getAttribute('data-id');
-                const title = button.getAttribute('data-title');
-                const price = parseFloat(button.getAttribute('data-price'));
-                const img = button.getAttribute('data-img');
-                
-                // Check if item already in cart
-                const existingItem = cart.find(item => item.id === id);
-                
-                if (existingItem) {
-                    existingItem.quantity += 1;
-                } else {
-                    cart.push({
-                        id,
-                        title,
-                        price,
-                        img,
-                        quantity: 1,
-                        days: 1
-                    });
-                }
-                
-                updateCart();
-                
-                // Visual feedback
-                button.textContent = 'Added to Cart';
-                button.style.backgroundColor = '#4CAF50';
-                
-                setTimeout(() => {
-                    button.textContent = 'Add to Cart';
-                    button.style.backgroundColor = '';
-                }, 1500);
-            });
-        });
-        
-        // Update Cart
-        function updateCart() {
-            // Save cart to localStorage
-            localStorage.setItem('cart', JSON.stringify(cart));
-            
-            // Update cart count
-            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-            cartCount.textContent = totalItems;
-            
-            // Update cart items
-            if (cart.length === 0) {
-                cartItems.innerHTML = `
-                    <div class="empty-cart">
-                        <i class="fas fa-shopping-cart" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                        <p>Your cart is empty</p>
-                    </div>
-                `;
-                cartTotal.textContent = '₹0';
-            } else {
-                cartItems.innerHTML = '';
-                
-                let total = 0;
-                
-                cart.forEach(item => {
-                    const itemTotal = item.price * item.days * item.quantity;
-                    total += itemTotal;
-                    
-                    const cartItemElement = document.createElement('div');
-                    cartItemElement.className = 'cart-item';
-                    cartItemElement.innerHTML = `
-                        <img src="${item.img}" alt="${item.title}" class="cart-item-img">
-                        <div class="cart-item-details">
-                            <h4 class="cart-item-title">${item.title}</h4>
-                            <p class="cart-item-price">₹${item.price}/day × ${item.days} days</p>
-                            <div class="days-selector">
-                                <button class="decrease-days" data-id="${item.id}">-</button>
-                                <input type="number" value="${item.days}" min="1" class="days-input" data-id="${item.id}">
-                                <button class="increase-days" data-id="${item.id}">+</button>
-                            </div>
-                            <button class="remove-item" data-id="${item.id}">
-                                <i class="fas fa-trash"></i> Remove
-                            </button>
-                        </div>
-                    `;
-                    
-                    cartItems.appendChild(cartItemElement);
-                });
-                
-                cartTotal.textContent = `₹${total.toFixed(2)}`;
-                
-                // Add event listeners to new elements
-                document.querySelectorAll('.decrease-days').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const id = e.target.getAttribute('data-id');
-                        const item = cart.find(item => item.id === id);
-                        if (item.days > 1) {
-                            item.days -= 1;
-                            updateCart();
-                        }
-                    });
-                });
-                
-                document.querySelectorAll('.increase-days').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const id = e.target.getAttribute('data-id');
-                        const item = cart.find(item => item.id === id);
-                        item.days += 1;
-                        updateCart();
-                    });
-                });
-                
-                document.querySelectorAll('.days-input').forEach(input => {
-                    input.addEventListener('change', (e) => {
-                        const id = e.target.getAttribute('data-id');
-                        const item = cart.find(item => item.id === id);
-                        const newDays = parseInt(e.target.value);
-                        if (newDays >= 1) {
-                            item.days = newDays;
-                            updateCart();
-                        } else {
-                            e.target.value = item.days;
-                        }
-                    });
-                });
-                
-                document.querySelectorAll('.remove-item').forEach(button => {
-                    button.addEventListener('click', (e) => {
-                        const id = e.target.getAttribute('data-id');
-                        cart = cart.filter(item => item.id !== id);
-                        updateCart();
-                    });
-                });
-            }
-        }
-        
-        // Load cart from localStorage
-        function loadCart() {
-            const savedCart = localStorage.getItem('cart');
-            if (savedCart) {
-                cart = JSON.parse(savedCart);
-                updateCart();
-            }
-        }
-        
-        // Initialize cart
-        loadCart();
- 
-        
         // Check if user is logged in
-function checkAuthStatus() {
-    fetch('auth/check_auth.php')
-        .then(response => response.json())
-        .then(data => {
-            if (data.authenticated) {
-                localStorage.setItem('loggedIn', 'true');
-                localStorage.setItem('userName', data.user.name);
-                localStorage.setItem('userEmail', data.user.email);
-            } else {
-                localStorage.removeItem('loggedIn');
-                localStorage.removeItem('userName');
-                localStorage.removeItem('userEmail');
-            }
-            updateLoginStatus();
-        })
-        .catch(error => {
-            console.error('Error checking auth status:', error);
-        });
-}
-
-// Update UI based on login status
-function updateLoginStatus() {
-    const loggedIn = localStorage.getItem('loggedIn') === 'true';
-    const loginButtons = document.querySelectorAll('.login-btn');
-    const signupButtons = document.querySelectorAll('.signup-btn');
-    const userAvatar = document.getElementById('userAvatar');
-    
-    if (loggedIn) {
-        const userName = localStorage.getItem('userName') || 'User';
-        userAvatar.textContent = userName.charAt(0).toUpperCase();
-        loginButtons.forEach(btn => btn.style.display = 'none');
-        signupButtons.forEach(btn => btn.style.display = 'none');
-        
-        // Add logout functionality to avatar
-        userAvatar.onclick = function() {
-            fetch('auth/logout.php')
+        function checkAuthStatus() {
+            fetch('auth/check_auth.php')
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
+                    if (data.authenticated) {
+                        localStorage.setItem('loggedIn', 'true');
+                        localStorage.setItem('userName', data.user.name);
+                        localStorage.setItem('userEmail', data.user.email);
+                    } else {
                         localStorage.removeItem('loggedIn');
                         localStorage.removeItem('userName');
                         localStorage.removeItem('userEmail');
-                        updateLoginStatus();
-                        window.location.reload(); // Refresh to update the UI
                     }
+                    updateLoginStatus();
+                })
+                .catch(error => {
+                    console.error('Error checking auth status:', error);
                 });
-        };
-    } else {
-        userAvatar.textContent = 'JS';
-        loginButtons.forEach(btn => btn.style.display = 'inline-block');
-        signupButtons.forEach(btn => btn.style.display = 'inline-block');
-        
-        // Remove logout functionality
-        userAvatar.onclick = null;
-    }
-}
+        }
 
-// Initialize auth status
-checkAuthStatus();
+        // Update UI based on login status
+        function updateLoginStatus() {
+            const loggedIn = localStorage.getItem('loggedIn') === 'true';
+            const loginButtons = document.querySelectorAll('.login-btn');
+            const signupButtons = document.querySelectorAll('.signup-btn');
+            const userAvatar = document.getElementById('userAvatar');
+            
+            if (loggedIn) {
+                const userName = localStorage.getItem('userName') || 'User';
+                userAvatar.textContent = userName.charAt(0).toUpperCase();
+                loginButtons.forEach(btn => btn.style.display = 'none');
+                signupButtons.forEach(btn => btn.style.display = 'none');
+                
+                // Add logout functionality to avatar
+                userAvatar.onclick = function() {
+                    fetch('auth/logout.php')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                localStorage.removeItem('loggedIn');
+                                localStorage.removeItem('userName');
+                                localStorage.removeItem('userEmail');
+                                updateLoginStatus();
+                                window.location.reload(); // Refresh to update the UI
+                            }
+                        });
+                };
+            } else {
+                userAvatar.textContent = 'JS';
+                loginButtons.forEach(btn => btn.style.display = 'inline-block');
+                signupButtons.forEach(btn => btn.style.display = 'inline-block');
+                
+                // Remove logout functionality
+                userAvatar.onclick = null;
+            }
+        }
 
-// Authentication Modal
-const authOverlay = document.getElementById('authOverlay');
-const closeAuth = document.getElementById('closeAuth');
-const authTabs = document.querySelectorAll('.auth-tab');
-const authForms = document.querySelectorAll('.auth-form');
-const switchToSignup = document.getElementById('switchToSignup');
-const switchToLogin = document.getElementById('switchToLogin');
-const loginSubmit = document.getElementById('loginSubmit');
-const signupSubmit = document.getElementById('signupSubmit');
-const loginRequired = document.getElementById('loginRequired');
-const goToLoginBtn = document.getElementById('goToLoginBtn');
+        // Initialize auth status
+        checkAuthStatus();
 
-// Show login required popup
-function showLoginRequired() {
-    loginRequired.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-}
+        // Authentication Modal
+        const authOverlay = document.getElementById('authOverlay');
+        const closeAuth = document.getElementById('closeAuth');
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const authForms = document.querySelectorAll('.auth-form');
+        const switchToSignup = document.getElementById('switchToSignup');
+        const switchToLogin = document.getElementById('switchToLogin');
+        const loginSubmit = document.getElementById('loginSubmit');
+        const signupSubmit = document.getElementById('signupSubmit');
+        const loginRequired = document.getElementById('loginRequired');
+        const goToLoginBtn = document.getElementById('goToLoginBtn');
 
-// Hide login required popup
-function hideLoginRequired() {
-    loginRequired.style.display = 'none';
-    document.body.style.overflow = '';
-}
+        // Show login required popup
+        function showLoginRequired() {
+            loginRequired.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
 
-// Open auth modal
-function openAuthModal(tab = 'login') {
-    authOverlay.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    
-    // Set active tab
-    authTabs.forEach(t => t.classList.remove('active'));
-    authForms.forEach(f => f.classList.remove('active'));
-    
-    if (tab === 'login') {
-        document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
-        document.getElementById('loginForm').classList.add('active');
-    } else {
-        document.querySelector('.auth-tab[data-tab="signup"]').classList.add('active');
-        document.getElementById('signupForm').classList.add('active');
-    }
-}
+        // Hide login required popup
+        function hideLoginRequired() {
+            loginRequired.style.display = 'none';
+            document.body.style.overflow = '';
+        }
 
-// Close auth modal
-function closeAuthModal() {
-    authOverlay.style.display = 'none';
-    document.body.style.overflow = '';
-}
+        // Open auth modal
+        function openAuthModal(tab = 'login') {
+            authOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            
+            // Set active tab
+            authTabs.forEach(t => t.classList.remove('active'));
+            authForms.forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.querySelector('.auth-tab[data-tab="signup"]').classList.add('active');
+                document.getElementById('signupForm').classList.add('active');
+            }
+        }
 
-// Switch between login and signup tabs
-authTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        authTabs.forEach(t => t.classList.remove('active'));
-        authForms.forEach(f => f.classList.remove('active'));
-        
-        tab.classList.add('active');
-        const tabId = tab.getAttribute('data-tab');
-        document.getElementById(tabId + 'Form').classList.add('active');
-    });
-});
+        // Close auth modal
+        function closeAuthModal() {
+            authOverlay.style.display = 'none';
+            document.body.style.overflow = '';
+        }
 
-// Switch to signup from login
-switchToSignup.addEventListener('click', (e) => {
-    e.preventDefault();
-    authTabs.forEach(t => t.classList.remove('active'));
-    authForms.forEach(f => f.classList.remove('active'));
-    
-    document.querySelector('.auth-tab[data-tab="signup"]').classList.add('active');
-    document.getElementById('signupForm').classList.add('active');
-});
+        // Switch between login and signup tabs
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                authTabs.forEach(t => t.classList.remove('active'));
+                authForms.forEach(f => f.classList.remove('active'));
+                
+                tab.classList.add('active');
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId + 'Form').classList.add('active');
+            });
+        });
 
-// Switch to login from signup
-switchToLogin.addEventListener('click', (e) => {
-    e.preventDefault();
-    authTabs.forEach(t => t.classList.remove('active'));
-    authForms.forEach(f => f.classList.remove('active'));
-    
-    document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
-    document.getElementById('loginForm').classList.add('active');
-});
+        // Switch to signup from login
+        switchToSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            authTabs.forEach(t => t.classList.remove('active'));
+            authForms.forEach(f => f.classList.remove('active'));
+            
+            document.querySelector('.auth-tab[data-tab="signup"]').classList.add('active');
+            document.getElementById('signupForm').classList.add('active');
+        });
 
-// Close auth modal
-closeAuth.addEventListener('click', closeAuthModal);
+        // Switch to login from signup
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            authTabs.forEach(t => t.classList.remove('active'));
+            authForms.forEach(f => f.classList.remove('active'));
+            
+            document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
+            document.getElementById('loginForm').classList.add('active');
+        });
 
-// Login form submission
-loginSubmit.addEventListener('click', () => {
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    if (!email || !password) {
-        alert('Please fill in all fields');
-        return;
-    }
-    
-    fetch('auth/login.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            email: email,
-            password: password
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            localStorage.setItem('loggedIn', 'true');
-            localStorage.setItem('userName', data.user.name);
-            localStorage.setItem('userEmail', data.user.email);
-            closeAuthModal();
-            updateLoginStatus();
+        // Close auth modal
+        closeAuth.addEventListener('click', closeAuthModal);
+
+        // Login form submission
+        loginSubmit.addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            fetch('auth/login.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('loggedIn', 'true');
+                    localStorage.setItem('userName', data.user.name);
+                    localStorage.setItem('userEmail', data.user.email);
+                    closeAuthModal();
+                    updateLoginStatus();
+                    hideLoginRequired();
+                    alert('Login successful!');
+                } else {
+                    alert(data.message || 'Login failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during login');
+            });
+        });
+
+        // Signup form submission
+        signupSubmit.addEventListener('click', () => {
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            
+            if (!name || !email || !password || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            fetch('auth/signup.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password,
+                    confirmPassword: confirmPassword
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('loggedIn', 'true');
+                    localStorage.setItem('userName', data.user.name);
+                    localStorage.setItem('userEmail', data.user.email);
+                    closeAuthModal();
+                    updateLoginStatus();
+                    hideLoginRequired();
+                    alert('Account created successfully! You are now logged in.');
+                } else {
+                    alert(data.message || 'Signup failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during signup');
+            });
+        });
+
+        // Login buttons
+        document.querySelectorAll('.login-btn, #mobileLoginBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openAuthModal('login');
+            });
+        });
+
+        // Signup buttons
+        document.querySelectorAll('.signup-btn, #mobileSignupBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openAuthModal('signup');
+            });
+        });
+
+        // Go to login from login required popup
+        goToLoginBtn.addEventListener('click', () => {
             hideLoginRequired();
-            alert('Login successful!');
-        } else {
-            alert(data.message || 'Login failed');
+            openAuthModal('login');
+        });
+
+        // Close login required popup when clicking outside
+        loginRequired.addEventListener('click', (e) => {
+            if (e.target === loginRequired) {
+                hideLoginRequired();
+            }
+        });
+
+        // Check auth status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+        });
+
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('auth/check_auth.php');
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    // Update localStorage to match server session
+                    localStorage.setItem('loggedIn', 'true');
+                    localStorage.setItem('userName', data.user.name);
+                    localStorage.setItem('userEmail', data.user.email);
+                    updateUIForLoggedInUser(data.user);
+                } else {
+                    // Clear localStorage if server says not authenticated
+                    localStorage.removeItem('loggedIn');
+                    localStorage.removeItem('userName');
+                    localStorage.removeItem('userEmail');
+                    updateUIForLoggedOutUser();
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+            }
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred during login');
-    });
-});
 
-// Signup form submission
-signupSubmit.addEventListener('click', () => {
-    const name = document.getElementById('signupName').value;
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const confirmPassword = document.getElementById('signupConfirmPassword').value;
-    
-    if (!name || !email || !password || !confirmPassword) {
-        alert('Please fill in all fields');
-        return;
-    }
-    
-    if (password !== confirmPassword) {
-        alert('Passwords do not match');
-        return;
-    }
-    
-    fetch('auth/signup.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            name: name,
-            email: email,
-            password: password,
-            confirmPassword: confirmPassword
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            localStorage.setItem('loggedIn', 'true');
-            localStorage.setItem('userName', data.user.name);
-            localStorage.setItem('userEmail', data.user.email);
-            closeAuthModal();
-            updateLoginStatus();
-            hideLoginRequired();
-            alert('Account created successfully! You are now logged in.');
-        } else {
-            alert(data.message || 'Signup failed');
+        // Call this after successful login
+        function updateUIForLoggedInUser(user) {
+            const userAvatar = document.getElementById('userAvatar');
+            userAvatar.textContent = user.name.charAt(0).toUpperCase();
+            document.querySelectorAll('.login-btn, .signup-btn').forEach(btn => {
+                btn.style.display = 'none';
+            });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred during signup');
-    });
-});
 
-// Login buttons
-document.querySelectorAll('.login-btn, #mobileLoginBtn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        openAuthModal('login');
-    });
-});
-
-// Signup buttons
-document.querySelectorAll('.signup-btn, #mobileSignupBtn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        openAuthModal('signup');
-    });
-});
-
-// Go to login from login required popup
-goToLoginBtn.addEventListener('click', () => {
-    hideLoginRequired();
-    openAuthModal('login');
-});
-
-// Close login required popup when clicking outside
-loginRequired.addEventListener('click', (e) => {
-    if (e.target === loginRequired) {
-        hideLoginRequired();
-    }
-});
-
-
-
-// Check auth status on page load
-document.addEventListener('DOMContentLoaded', function() {
-    checkAuthStatus();
-});
-
-async function checkAuthStatus() {
-    try {
-        const response = await fetch('auth/check_auth.php');
-        const data = await response.json();
-        
-        if (data.authenticated) {
-            // Update localStorage to match server session
-            localStorage.setItem('loggedIn', 'true');
-            localStorage.setItem('userName', data.user.name);
-            localStorage.setItem('userEmail', data.user.email);
-            updateUIForLoggedInUser(data.user);
-        } else {
-            // Clear localStorage if server says not authenticated
-            localStorage.removeItem('loggedIn');
-            localStorage.removeItem('userName');
-            localStorage.removeItem('userEmail');
-            updateUIForLoggedOutUser();
+        function updateUIForLoggedOutUser() {
+            document.getElementById('userAvatar').textContent = 'JS';
+            document.querySelectorAll('.login-btn, .signup-btn').forEach(btn => {
+                btn.style.display = 'inline-block';
+            });
         }
-    } catch (error) {
-        console.error('Auth check failed:', error);
-    }
-}
-
-// Call this after successful login
-function updateUIForLoggedInUser(user) {
-    const userAvatar = document.getElementById('userAvatar');
-    userAvatar.textContent = user.name.charAt(0).toUpperCase();
-    document.querySelectorAll('.login-btn, .signup-btn').forEach(btn => {
-        btn.style.display = 'none';
-    });
-}
-
-function updateUIForLoggedOutUser() {
-    document.getElementById('userAvatar').textContent = 'JS';
-    document.querySelectorAll('.login-btn, .signup-btn').forEach(btn => {
-        btn.style.display = 'inline-block';
-    });
-}
     </script>
     <!-- Add this JavaScript at the bottom of your page -->
-<script>
-function openTab(evt, tabName) {
-    // Hide all tab content
-    var tabContents = document.getElementsByClassName("tab-content");
-    for (var i = 0; i < tabContents.length; i++) {
-        tabContents[i].classList.remove("active");
-    }
+    <script>
+    function openTab(evt, tabName) {
+        // Hide all tab content
+        var tabContents = document.getElementsByClassName("tab-content");
+        for (var i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.remove("active");
+        }
 
-    // Remove active class from all tab buttons
-    var tabButtons = document.getElementsByClassName("tab-btn");
-    for (var i = 0; i < tabButtons.length; i++) {
-        tabButtons[i].classList.remove("active");
-    }
+        // Remove active class from all tab buttons
+        var tabButtons = document.getElementsByClassName("tab-btn");
+        for (var i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].classList.remove("active");
+        }
 
-    // Show the current tab and add active class to the button
-    document.getElementById(tabName).classList.add("active");
-    evt.currentTarget.classList.add("active");
-}
-</script>
+        // Show the current tab and add active class to the button
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+    </script>
     <script src="assets/css/style.css"></script>
     <script src="assets/js/comp.js"></script>
+   
 </body>
 </html>

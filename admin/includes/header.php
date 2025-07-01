@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Learning Admin Panel</title>
+    <title>Unique Digital Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
@@ -224,7 +224,7 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h5>E-Learning</h5>
+            <h5>Unique Digital Panel</h5>
             <button class="sidebar-toggle" id="sidebarToggle">
                 <i class="bi bi-chevron-left"></i>
             </button>
@@ -237,7 +237,7 @@
                 </a>
             </li>
             <li>
-                <a href="../classes/" data-tooltip="Classes">
+                <a href="./classes/" data-tooltip="Classes">
                     <i class="bi bi-journal-bookmark"></i>
                     <span>Classes</span>
                 </a>

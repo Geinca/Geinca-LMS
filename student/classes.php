@@ -7,6 +7,14 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
+// Automatically update expired live sessions
+try {
+    $updateStmt = $pdo->prepare("UPDATE lessons SET is_live = 0 WHERE is_live = 1 AND live_end < NOW()");
+    $updateStmt->execute();
+} catch (PDOException $e) {
+    error_log("Error updating live sessions: " . $e->getMessage());
+}
+
 // Enable error reporting
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -135,14 +143,17 @@ try {
     }
 
     // Get lessons for this course
-    $lessons = $pdo->prepare("SELECT id, course_id, title, description, video_url, duration, position, 
-                             is_preview, date, time, is_live, live_date, live_end 
-                             FROM lessons WHERE course_id = ? ORDER BY position");
-    $lessons->execute([$courseId]);
-    $section = [
-        'lessons' => $lessons->fetchAll(PDO::FETCH_ASSOC),
-        'title' => $course['title']
-    ];
+   $lessons = $pdo->prepare("SELECT id, course_id, title, description, video_url, duration, position, 
+                         is_preview, date, time, is_live, live_date, live_end 
+                         FROM lessons 
+                         WHERE course_id = ? 
+                         AND (is_live = 0 OR (is_live = 1 AND live_date <= NOW() AND live_end >= NOW()))
+                         ORDER BY position");
+$lessons->execute([$courseId]);
+$section = [
+    'lessons' => $lessons->fetchAll(PDO::FETCH_ASSOC),
+    'title' => $course['title']
+];
     
     // Check for live lessons
     $currentDateTime = new DateTime();
@@ -271,7 +282,7 @@ try {
             width: 100px;
             text-align: center;
         }
-        .live-badge {
+        /* .live-badge {
             position: absolute;
             top: 10px;
             left: 10px;
@@ -282,7 +293,7 @@ try {
             font-size: 12px;
             font-weight: bold;
             z-index: 10;
-        }
+        } */
         .live-views {
             position: absolute;
             top: 10px;
@@ -294,6 +305,45 @@ try {
             font-size: 12px;
             z-index: 10;
         }
+
+      .live-badge {
+    background-color: #ff0000;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.upcoming-badge {
+    background-color: #3B82F6;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    animation: pulse 2s infinite;
+}
+
+.ended-badge {
+    background-color: #6B7280;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+
+
     </style>
 </head>
 
@@ -401,16 +451,19 @@ try {
                     
                     <div class="divide-y divide-gray-200">
                         <?php if (!empty($section['lessons'])): ?>
-                            <?php foreach ($section['lessons'] as $index => $lesson): 
-                                $isLocked = !$isEnrolled && $index > 0;
-                                $embedUrl = $isLocked ? '' : convertToEmbedUrl($lesson['video_url']);
-                            ?>
-                                <div class="lesson-item px-4 py-3 cursor-pointer transition-colors relative <?= ($lesson['video_url'] === $currentVideo['url']) ? 'active' : '' ?> <?= $isLocked ? 'locked-lesson' : 'hover:bg-blue-50' ?>"
-                                    data-embed-url="<?= htmlspecialchars($embedUrl) ?>"
-                                    data-lesson-title="<?= htmlspecialchars($lesson['title']) ?>"
-                                    data-lesson-desc="<?= htmlspecialchars($lesson['description']) ?>"
-                                    data-is-locked="<?= $isLocked ? 'true' : 'false' ?>"
-                                    data-is-live="<?= $lesson['is_live_now'] ? 'true' : 'false' ?>">
+                         <?php foreach ($section['lessons'] as $index => $lesson): 
+    $isLocked = !$isEnrolled && $index > 0;
+    $embedUrl = $isLocked ? '' : convertToEmbedUrl($lesson['video_url']);
+    $isLiveNow = $lesson['is_live_now'] ?? false;
+?>
+    <div class="lesson-item px-4 py-3 cursor-pointer transition-colors relative <?= ($lesson['video_url'] === $currentVideo['url']) ? 'active' : '' ?> <?= $isLocked ? 'locked-lesson' : 'hover:bg-blue-50' ?>"
+        data-embed-url="<?= htmlspecialchars($embedUrl) ?>"
+        data-lesson-title="<?= htmlspecialchars($lesson['title']) ?>"
+        data-lesson-desc="<?= htmlspecialchars($lesson['description']) ?>"
+        data-is-locked="<?= $isLocked ? 'true' : 'false' ?>"
+        data-is-live="<?= $isLiveNow ? 'true' : 'false' ?>"
+        data-live-date="<?= htmlspecialchars($lesson['live_date'] ?? '') ?>"
+        data-live-end="<?= htmlspecialchars($lesson['live_end'] ?? '') ?>">
                                     
                                     <?php if ($isLocked): ?>
                                         <div class="lock-icon">
@@ -480,6 +533,35 @@ try {
             <button id="closeFailureModal" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Try Again</button>
         </div>
     </div>
+
+
+    <!-- comments -->
+     <!-- Fake Engagement Section -->
+<div class="fixed bottom-0 right-0 w-full md:w-96 bg-white shadow-lg border-t border-gray-200 hidden" id="liveEngagement">
+    <div class="p-4">
+        <!-- Like Counter -->
+        <div class="flex items-center mb-4">
+            <button id="likeButton" class="text-2xl mr-2 focus:outline-none">
+                <i class="far fa-heart"></i>
+            </button>
+            <span id="likeCount" class="font-semibold">0</span>
+        </div>
+        
+        <!-- Live Comments Section -->
+        <div class="mb-2">
+            <h4 class="font-bold text-gray-700 mb-2">Live Chat</h4>
+            <div class="h-64 overflow-y-auto border rounded-lg p-2 bg-gray-50" id="commentSection">
+                <!-- Comments will appear here -->
+            </div>
+        </div>
+        
+        <!-- Fake Comment Input -->
+        <div class="flex items-center">
+            <input type="text" id="fakeCommentInput" class="flex-grow border rounded-l-lg px-3 py-2" placeholder="Add a comment...">
+            <button id="fakeCommentBtn" class="bg-blue-500 text-white px-4 py-2 rounded-r-lg">Send</button>
+        </div>
+    </div>
+</div>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
@@ -662,6 +744,329 @@ try {
                 lessonItems[0].click();
             }
         });
+
+
+
+
+
+      // Add this right after your existing JavaScript code
+
+// Function to update live status in real-time
+function updateLiveStatus() {
+    const now = new Date();
+    
+    document.querySelectorAll('.lesson-item').forEach(item => {
+        const liveDate = item.getAttribute('data-live-date');
+        const liveEnd = item.getAttribute('data-live-end');
+        
+        if (!liveDate || !liveEnd) return;
+        
+        const startTime = new Date(liveDate);
+        const endTime = new Date(liveEnd);
+        
+        // Remove any existing badges/countdowns
+        item.querySelector('.live-badge')?.remove();
+        item.querySelector('.live-views')?.remove();
+        item.querySelector('.countdown')?.remove();
+        item.querySelector('.live-ended')?.remove();
+        
+        // Check current status
+        if (now >= startTime && now <= endTime) {
+            // Lesson is live now
+            item.setAttribute('data-is-live', 'true');
+            
+            // Add live badge if this is the active lesson
+            if (item.classList.contains('active')) {
+                const liveBadge = document.createElement('div');
+                liveBadge.className = 'live-badge';
+                liveBadge.textContent = 'LIVE';
+                item.appendChild(liveBadge);
+                
+                const liveViews = document.createElement('div');
+                liveViews.className = 'live-views';
+                liveViews.id = 'liveViews';
+                liveViews.textContent = `${Math.floor(Math.random() * 400) + 100} watching`;
+                item.appendChild(liveViews);
+            }
+            checkEngagement();
+        } 
+        else if (now < startTime) {
+            // Lesson is upcoming
+            const timeDiff = startTime - now;
+            const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            const countdown = document.createElement('span');
+            countdown.className = 'countdown text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full ml-8 mt-1 inline-block';
+            countdown.textContent = `Live in ${hours}h ${minutes}m`;
+            item.appendChild(countdown);
+        }
+        else if (now > endTime) {
+            // Lesson live session has ended
+            item.setAttribute('data-is-live', 'false');
+            
+            const endedBadge = document.createElement('span');
+            endedBadge.className = 'live-ended text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full ml-8 mt-1 inline-block';
+            endedBadge.textContent = 'Live Ended';
+            item.appendChild(endedBadge);
+        }
+    });
+}
+
+// Run initially and every 30 seconds
+updateLiveStatus();
+setInterval(updateLiveStatus, 30000);
+
+// Update video player when lesson goes live/ends
+function checkActiveLessonStatus() {
+    const activeLesson = document.querySelector('.lesson-item.active');
+    if (!activeLesson) return;
+    
+    const isLive = activeLesson.getAttribute('data-is-live') === 'true';
+    const embedUrl = activeLesson.getAttribute('data-embed-url');
+    
+    if (isLive && videoPlayer.src !== embedUrl) {
+        videoPlayer.src = embedUrl;
+    }
+}
+
+// Check every 15 seconds
+setInterval(checkActiveLessonStatus, 15000);
+
+
+
+
+
+// Add this to your script section
+function monitorLiveLessons() {
+    const now = new Date();
+    
+    // Check all lessons for live status
+    document.querySelectorAll('.lesson-item').forEach(item => {
+        const liveDateStr = item.getAttribute('data-live-date');
+        const liveEndStr = item.getAttribute('data-live-end');
+        
+        if (!liveDateStr || !liveEndStr) return;
+        
+        const liveDate = new Date(liveDateStr);
+        const liveEnd = new Date(liveEndStr);
+        
+        // Remove all status indicators
+        item.querySelector('.live-badge')?.remove();
+        item.querySelector('.live-views')?.remove();
+        item.querySelector('.upcoming-badge')?.remove();
+        item.querySelector('.ended-badge')?.remove();
+        
+        // Check current time against live window
+        if (now >= liveDate && now <= liveEnd) {
+            // Lesson is currently live
+            item.style.display = 'block';
+            item.setAttribute('data-is-live', 'true');
+            
+            const liveBadge = document.createElement('div');
+            liveBadge.className = 'live-badge';
+            liveBadge.innerHTML = '<i class="fas fa-circle mr-1"></i> LIVE';
+            item.prepend(liveBadge);
+            
+            if (item.classList.contains('active')) {
+                const videoPlayer = document.getElementById('videoPlayer');
+                if (videoPlayer) {
+                    videoPlayer.src = item.getAttribute('data-embed-url');
+                }
+            }
+        } 
+        else if (now < liveDate) {
+            // Lesson is upcoming
+            item.style.display = 'none'; // Hide until live time
+        }
+        else {
+            // Lesson has ended
+            item.style.display = 'block';
+            item.setAttribute('data-is-live', 'false');
+            
+            const endedBadge = document.createElement('div');
+            endedBadge.className = 'ended-badge text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded';
+            endedBadge.textContent = 'Live Ended';
+            item.prepend(endedBadge);
+        }
+    });
+}
+
+
+// comments
+// Add this to your existing JavaScript
+
+// Fake comments data
+const fakeComments = [
+    { name: "Rahul Sharma", text: "Amazing explanation bhai!" },
+    { name: "Priya Patel", text: "Kya baat hai, mast samjha rahe ho" },
+    { name: "Amit Singh", text: "Ye concept clear ho gaya" },
+    { name: "Neha Gupta", text: "Please next topic bhi aise hi samjhaiye" },
+    { name: "Vikas Kumar", text: "Sir, doubt hai thoda" },
+    { name: "Anjali Mishra", text: "Recording milegi kya?" },
+    { name: "Sanjay Verma", text: "Like karo sab log" },
+    { name: "Pooja Reddy", text: "Thank you sir!" }
+];
+
+// Fake names for random comments
+const fakeNames = [
+    "Rohit", "Sneha", "Aryan", "Divya", "Karan", "Ananya", 
+    "Vivek", "Shreya", "Raj", "Mehak", "Alok", "Ishita"
+];
+
+// Initialize engagement system
+function initEngagement() {
+    const engagementPanel = document.getElementById('liveEngagement');
+    const commentSection = document.getElementById('commentSection');
+    const likeButton = document.getElementById('likeButton');
+    const likeCount = document.getElementById('likeCount');
+    const fakeCommentBtn = document.getElementById('fakeCommentBtn');
+    
+    let likes = 0;
+    let isLiked = false;
+    
+    // Show engagement panel only during live
+    const activeLesson = document.querySelector('.lesson-item.active');
+    if (activeLesson && activeLesson.getAttribute('data-is-live') === 'true') {
+        engagementPanel.classList.remove('hidden');
+        
+        // Start auto comments
+        startAutoComments();
+        
+        // Auto-increase likes
+        setInterval(() => {
+            likes += Math.floor(Math.random() * 3);
+            likeCount.textContent = likes.toLocaleString();
+        }, 3000);
+    } else {
+        engagementPanel.classList.add('hidden');
+    }
+    
+    // Like button functionality
+    likeButton.addEventListener('click', () => {
+        if (isLiked) {
+            likes--;
+            likeButton.innerHTML = '<i class="far fa-heart"></i>';
+        } else {
+            likes++;
+            likeButton.innerHTML = '<i class="fas fa-heart text-red-500"></i>';
+        }
+        isLiked = !isLiked;
+        likeCount.textContent = likes.toLocaleString();
+    });
+    
+    // Fake comment button
+    fakeCommentBtn.addEventListener('click', () => {
+        const input = document.getElementById('fakeCommentInput');
+        if (input.value.trim()) {
+            addComment("You", input.value);
+            input.value = '';
+            
+            // Auto-reply after 2 seconds
+            setTimeout(() => {
+                const reply = getRandomReply();
+                addComment("Instructor", reply);
+            }, 2000);
+        }
+    });
+}
+
+// Start auto comments
+function startAutoComments() {
+    const commentSection = document.getElementById('commentSection');
+    
+    // Initial comments
+    fakeComments.forEach((comment, index) => {
+        setTimeout(() => {
+            addComment(comment.name, comment.text);
+        }, index * 3000);
+    });
+    
+    // Keep adding random comments
+    setInterval(() => {
+        const randomName = fakeNames[Math.floor(Math.random() * fakeNames.length)];
+        const randomText = getRandomComment();
+        addComment(randomName, randomText);
+    }, 5000);
+}
+
+// Add comment to section
+function addComment(name, text) {
+    const commentSection = document.getElementById('commentSection');
+    const commentDiv = document.createElement('div');
+    commentDiv.className = 'mb-2';
+    commentDiv.innerHTML = `
+        <span class="font-semibold">${name}:</span>
+        <span class="text-gray-700">${text}</span>
+    `;
+    commentSection.appendChild(commentDiv);
+    commentSection.scrollTop = commentSection.scrollHeight;
+}
+
+// Random comment generator
+function getRandomComment() {
+    const comments = [
+        "Nice explanation!",
+        "Thank you sir!",
+        "Clear ho gaya",
+        "Please repeat that",
+        "Mast hai!",
+        "👏👏👏",
+        "Recording de dena",
+        "Next topic kab hai?",
+        "Doubt clear ho gaya",
+        "Like for good teaching"
+    ];
+    return comments[Math.floor(Math.random() * comments.length)];
+}
+
+// Random reply generator
+function getRandomReply() {
+    const replies = [
+        "Thank you!",
+        "Sure, will cover that",
+        "Any other doubts?",
+        "Glad it helped!",
+        "Recording will be shared",
+        "Next topic coming soon",
+        "Yes, correct!",
+        "Good question!"
+    ];
+    return replies[Math.floor(Math.random() * replies.length)];
+}
+
+// Call this when live lesson starts
+function checkEngagement() {
+    const activeLesson = document.querySelector('.lesson-item.active');
+    if (activeLesson && activeLesson.getAttribute('data-is-live') === 'true') {
+        initEngagement();
+    } else {
+        document.getElementById('liveEngagement').classList.add('hidden');
+    }
+}
+
+
+// Function to check if live session has ended
+function checkLiveStatus() {
+    const activeLesson = document.querySelector('.lesson-item.active');
+    if (!activeLesson) return;
+    
+    const liveEnd = activeLesson.getAttribute('data-live-end');
+    if (!liveEnd) return;
+    
+    const now = new Date();
+    const endTime = new Date(liveEnd);
+    
+    if (now > endTime) {
+        // Refresh the page to update status
+        window.location.reload();
+    }
+}
+
+// Check every 30 seconds (adjust as needed)
+setInterval(checkLiveStatus, 30000);
+
+
     </script>
 </body>
 </html>
